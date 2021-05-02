@@ -1,0 +1,126 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2021
+
+% ready for submission
+\usepackage{neurips_2021}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2021}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2021}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2021}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\input{pack}
+\usepackage{cleveref}
+\title{Simplifying the neural tangent kernel to explicitise the role of gates, weights, width and depth}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  David S.~Hippocampus\thanks{Use footnote for providing further information
+    about author (webpage, alternative address)---\emph{not} for acknowledging
+    funding agencies.} \\
+  Department of Computer Science\\
+  Cranberry-Lemon University\\
+  Pittsburgh, PA 15213 \\
+  \texttt{hippo@cs.cranberry-lemon.edu} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We study deep neural networks (DNNs) with rectified linear units (ReLUs). ReLUs are also gates (\emph{on/off}) which either blocks or allows its pre-activation input. Recent work of \cite{npk} developed a dual `neural-path' framework wherein a DNN with ReLU was broken down into paths, and the output was expressed as a summation of the contribution of individual paths. Using duality they showed that (i) most information is stored in the gates, (ii) gates are learnt during training and (iii) the \emph{neural tangent kernel} (NTK) simplifies into a \emph{neural path kernel} (NPK) which is solely dependent on the input and the gates.\\
+In this paper, we extend the dual view to provide new theoretical and experiments results. Firstly, in the case of fully connected DNNs, we simplify the NPK by showing that $\text{NPK}(x,x')= \ip{x,x'} \cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w$, where $x,x'$ is a pair of inputs, $w$ is width, $d$ is depth, $G_l(x)\in\{0,1\}^w$ is the binary feature vector which encodes the gates in layer $l$ for input $x$. At the heart are the \emph{base kernels} $\frac{\ip{G_l(x),G_l(x')}}w$, which measure the fraction of gates that are `on' for both inputs $x$ and $x'$ in each layer. Our simplified NPK expression explicitises the role of (i) activation is that of gating (ii) weights is to generate the gates, (iii) width is provide averaging in $\frac{\ip{G_l(x),G_l(x')}}w$ (iv) depth causes the product $\Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w$. We also show that in the presence of convolutions with pooling, the NPK is rotationally invariant, and in the presence of skip connections the NPK has a sum of product of base kernels structure. Based on our theory we setup novel experiments to verify the claim that \emph{most information is stored in the gates of a DNN with ReLU}.
+\end{abstract}
+\section{Introduction}
+Recent works have connected the training  and generalisation of deep neural networks (DNNs) to kernel methods. An important kernel associated with a DNN is its \emph{neural tangent kernel} (NTK), which is given by:
+\begin{align*}
+ \text{NTK}(x,x')\quad = \quad \ip{\nabla_{\Theta}\hat{y}(x), \nabla_{\Theta}\hat{y}(x')},
+\end{align*}
+where $x,x'$ is a pair of inputs, $\Theta$ denotes the DNN weights and $\hat{y}_\Theta(\cdot)$ is the DNN output. It was shown that as the width of the DNN goes to infinity the NTK matrix converges to a limiting deterministic matrix and training an infinitely wide DNN is equivalent to a kernel method with this limiting deterministic NTK matrix. While these recent results allows us to look at DNNs from the lens of kernel, there are two of important issues. Firstly, the infinite width NTK being a deterministic matrix has no feature learning whereas the success of DNNs is due to feature learning. Secondly, finite width convolutional neural network outperforms its corresponding infinite width deterministic NTK, i.e., NTK does not fully explain the success of deep learning.
+
+Recently, \citet{npk} developed a dual view for DNNs with rectified linear units (ReLUs) by exploiting the special gating property of ReLU. Each ReLU is also a gate which either blocks (multiplies by 0) or allows its pre-activation input (multiplies by 1). In the dual view, the computations are broken down \emph{path-by-path} as opposed to the primal view where the computations proceed \emph{layer-by-layer}. This provides a \emph{sub-network} based interpretation for DNNs: each input has a corresponding \emph{active sub-network} comprising of the gates that are \emph{on} and weights through such gates, that produces the output. The dual framework gave rise to a novel kernel known as the \emph{neural path kernel} given by 
+\begin{align*}
+ \text{NPK}(x,x')\quad =\quad \ip{x,x'}\cdot {\bf{overlap}}(x,x'),
+\end{align*}
+where ${\bf{overlap}}(x,x')$ is a measure of the sub-network that is `active' for both inputs $x$ and $x'$. They showed that in the limit of infinite width, weights initialised statistically independent of arbitrary gates, the NTK is equal (up to a scaling constant) to the \emph{neural path kernel} (NPK). Further, they showed that (i) most information is stored in the gates: using only the gates of a trained DNN are external masks it possible to reset and re-train the weights without significant loss (less than $1\%$) of performance and (ii) \emph{learning of gates} during training explains the difference between finite width CNN and the infinite width CNTK. 
+
+\subsection{Our Contribution: Simplify NPK into atomic units}
+In this paper we simplify the NPK into \emph{atomic} units to explicitise roles of gates, weights, width, depth, skip connections and convolutions with pooling. Novel contributions  are as under.
+
+$\bullet$ \textbf{Simplifying the NPK:} In fully connected DNNs, we show that 
+\begin{align*}
+\text{NPK}(x,x')=\langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
+ \end{align*}
+ where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. The above expression explicitises the role of (i) activation is that of gating (ii) weights is to generate the gates, (iii) width is provide averaging in $\frac{\ip{G_l(x),G_l(x')}}w$ (iv) depth causes the product $\Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w$. 
+ 
+$\bullet$ \textbf{Residual Networks (ResNets)} with skip connections give rise to NPK with a \emph{ sum of product of base kernels}.
+
+$\bullet$ \textbf{Convolutional layers with pooling} renders the NPK \emph{rotationally invariant}. 
+
+$\bullet$ \textbf{Invariances} We experimentally verify that performance is invariant to (i) layer permutations ($\Pi_{l=1}^{d-1} \frac{H^{\text{lyr}}_l}{w}$ does not change) and (ii) input tensor with entries equal to $1$ (here, NPK$(x,x')= \text{constant}\cdot \Pi_{l=1}^{d-1} \frac{H^{\text{lyr}}_l}{w}$ depends on the input via the product of the base kernels). This further supports the claim that \emph{most information is in the gates}. 
+
+$\bullet$ \textbf{Training only the gates} on CIFAR-10 achieves a test accuracy of $65\%$.
+
+
+
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\section{Appendix}
+
+Optionally include extra information (complete proofs, additional experiments and plots) in the appendix.
+This section will often be part of the supplemental material.
+
+\end{document}
