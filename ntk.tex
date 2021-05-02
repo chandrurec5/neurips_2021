@@ -1,0 +1,16 @@
+\section{Neural Tangent Kernel}\label{sec:ntk}
+%In this section, we define the neural tangent kernel (NTK) (see \Cref{def:ntk}) and briefly discuss its connection to training and generalisation of DNNs, and limitation of the NTK based approach to understand DNNs.
+Several works \cite{ntk,fcgp,convgp,arora2019exact,arora} have been successful in connecting the training and generalisation of DNNs to kernel methods. An important kernel associated with a DNN is the so called \emph{Neural Tangent Kernel (NTK)} defined as follows.
+\begin{definition}\label{def:ntk}
+ For input examples $x,x'\in\R^{\din}$, the neural tangent kernel (NTK), denoted by $K_{\Theta}(x,x')$ is defined as:
+\centerline{$
+K_{\Theta}(x,x') = \langle\nabla_{\Theta} \hat{y}_{\Theta}(x), \nabla_{\Theta} \hat{y}_{\Theta}(x') \rangle
+$}
+\end{definition}
+The NTK is related to the \emph{full training}\footnote{In contrast to the \emph{lazy training} regime, wherein, only the last layer weights of the DNN are trained (while other layer weights are \emph{frozen}, i.e., kept fixed during training). Kernel associated with the \emph{lazy regime} is known as the \emph{Conjugate Kernel} (CK). Since the NTK  \cite{arora2019exact} is better than the CK \cite{convgp} both as an approximation and as a standalone kernel method, we focus only on the NTK.}  regime wherein, all the weights are trained using gradient descent. The following result shows how the NTK naturally arises in DNNs trained by gradient descent.
+\begin{proposition}[\textbf{Lemma 3.1} by \citet{arora2019exact}]\label{prop:basic}
+Let $e_{\Theta}=\left(\hat{y}_{\Theta}(x_s)-y_s,s\in[n]\right)\in\R^n$ be the error in prediction. Let $\dot{\Theta}_t=-\nabla_{\Theta}L_{\Theta_t}$ denote gradient descent  with infinitesimally small step-size to minimise the  squared loss $L(\Theta)=\frac{1}{2}\norm{e_{\Theta}}_2^2$. It follows that the dynamics of the error term (during gradient descent) can be written as:\\ \centerline{$\dot{e}_{\Theta_t}=-K_{\Theta_t} e_{\Theta_t}$.} 
+\end{proposition}
+The NTK has appeared in various prior works \cite{ntk,dudnn,arora2019exact,cao2019generalization}. In what follows, for the sake of brevity, we mainly refer to the results by \citet{arora2019exact}. 
+
+\textbf{Key Points:} \citet{arora2019exact} showed that under appropriately randomised initialisation, as the width goes to infinity, $K_{\Theta_0}\ra K_*$, and $K_{\Theta_t}\approx K_{\Theta_0}$, where $K_*$ is the limiting (deterministic) NTK matrix. The main result is that an infinite width DNN trained using GD is equivalent to a kernel method with $K_*$.  They also proposed a pure kernel method  called the convolutional NTK (CNTK), which is the limiting NTK matrix  of an infinite width convolutional neural network (CNN). On CIFAR-10, CNTK  performs better than prior kernel methods by $10\%$. Despite the success of NTK as a pure kernel method, there are some issues.  Firstly, standard CNN still outperforms its corresponding CNTK by $5-6\%$. Secondly, since the infinite limit NTK `$K_*$' is a fixed deterministic matrix, there is no feature learning, whereas feature learning is believed to be the unique differentiator of DNNs from other the machine learning methods. Thus, NTK does not fully explain finite width DNNs. 

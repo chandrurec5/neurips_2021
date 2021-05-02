@@ -1,0 +1,30 @@
+\section{Introduction}
+Recent works have connected the training  and generalisation of deep neural networks (DNNs) to kernel methods. An important kernel associated with a DNN is its \emph{neural tangent kernel} (NTK), which is given by:
+\begin{align*}
+ \text{NTK}(x,x')\quad = \quad \ip{\nabla_{\Theta}\hat{y}(x), \nabla_{\Theta}\hat{y}(x')},
+\end{align*}
+where $x,x'$ is a pair of inputs, $\Theta$ denotes the DNN weights and $\hat{y}_\Theta(\cdot)$ is the DNN output. It was shown that as the width of the DNN goes to infinity the NTK matrix converges to a limiting deterministic matrix and training an infinitely wide DNN is equivalent to a kernel method with this limiting deterministic NTK matrix. While these recent results allows us to look at DNNs from the lens of kernel, there are two of important issues. Firstly, the infinite width NTK being a deterministic matrix has no feature learning whereas the success of DNNs is due to feature learning. Secondly, finite width convolutional neural network outperforms its corresponding infinite width deterministic NTK, i.e., NTK does not fully explain the success of deep learning.
+
+Recently, \citet{npk} developed a dual view for DNNs with rectified linear units (ReLUs) by exploiting the special gating property of ReLU. Each ReLU is also a gate which either blocks (multiplies by 0) or allows its pre-activation input (multiplies by 1). In the dual view, the computations are broken down \emph{path-by-path} as opposed to the primal view where the computations proceed \emph{layer-by-layer}. This provides a \emph{sub-network} based interpretation for DNNs: each input has a corresponding \emph{active sub-network} comprising of the gates that are \emph{on} and weights through such gates, that produces the output. The dual framework gave rise to a novel kernel known as the \emph{neural path kernel} given by 
+\begin{align*}
+ \text{NPK}(x,x')\quad =\quad \ip{x,x'}\cdot {\bf{overlap}}(x,x'),
+\end{align*}
+where ${\bf{overlap}}(x,x')$ is a measure of the sub-network that is `active' for both inputs $x$ and $x'$. They showed that in the limit of infinite width, weights initialised statistically independent of arbitrary gates, the NTK is equal (up to a scaling constant) to the \emph{neural path kernel} (NPK). Further, they showed that (i) most information is stored in the gates: using only the gates of a trained DNN are external masks it possible to reset and re-train the weights without significant loss (less than $1\%$) of performance and (ii) \emph{learning of gates} during training explains the difference between finite width CNN and the infinite width CNTK. 
+
+\subsection{Our Contribution: Simplify NPK into atomic units}
+In this paper we simplify the NPK into \emph{atomic} units to explicitise roles of gates, weights, width, depth, skip connections and convolutions with pooling. Novel contributions  are as under.
+
+$\bullet$ \textbf{Simplifying the NPK:} In fully connected DNNs, we show that 
+\begin{align*}
+\text{NPK}(x,x')=\langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
+ \end{align*}
+ where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. The above expression explicitises the role of (i) activation is that of gating (ii) weights is to generate the gates, (iii) width is provide averaging in $\frac{\ip{G_l(x),G_l(x')}}w$ (iv) depth causes the product $\Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w$. 
+ 
+$\bullet$ \textbf{Residual Networks (ResNets)} with skip connections give rise to NPK with a \emph{ sum of product of base kernels}.
+
+$\bullet$ \textbf{Convolutional layers with pooling} renders the NPK \emph{rotationally invariant}. 
+
+$\bullet$ \textbf{Invariances} We experimentally verify that performance is invariant to (i) layer permutations ($\Pi_{l=1}^{d-1} \frac{H^{\text{lyr}}_l}{w}$ does not change) and (ii) input tensor with entries equal to $1$ (here, NPK$(x,x')= \text{constant}\cdot \Pi_{l=1}^{d-1} \frac{H^{\text{lyr}}_l}{w}$ depends on the input via the product of the base kernels). This further supports the claim that \emph{most information is in the gates}. 
+
+$\bullet$ \textbf{Training only the gates} on CIFAR-10 achieves a test accuracy of $65\%$.
+

@@ -1,5 +1,5 @@
 %!TEX root =  autocontgrlp.tex
-
+\usepackage{savesym}
 \usepackage{multicol}
 \usepackage{multirow}
 \usepackage{dsfont}
@@ -47,9 +47,24 @@
 \usepackage{xspace}
 \usepackage{comment}
 \usepackage{placeins}
+\usepackage{cancel}
+\usepackage{changepage}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\setcounter{MaxMatrixCols}{32}
+\usepackage{placeins}
+\usepackage{esvect}
 
+\defcitealias{ch2020neural}{LS2020}
+\definecolor{electricpurple}{rgb}{0.75, 0.0, 1.0}
+\definecolor{darkbrown}{rgb}{0.4, 0.26, 0.13}
+\definecolor{cocoabrown}{rgb}{0.82, 0.41, 0.12}
+\definecolor{copper}{rgb}{0.72, 0.45, 0.2}
+\definecolor{chocolate}{rgb}{0.82, 0.41, 0.12}
+\usepackage{bm}
 
-%\usepackage[capitalize]{cleveref}
+\usepackage[capitalize]{cleveref}
 %\usepackage{caption}
 
 %\usepackage{style/ssltr}
@@ -64,90 +79,127 @@
 \fi
 %\usepackage{subfig}
 
-\newcommand{\rsa}{\rightsquigarrow}
-
 \newcommand{\mb}{\mbox{ }}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\zero}{\mathbf{0}}
 \newcommand{\nn}{\nonumber}
 
-\newcommand{\inrdnet}{\in\R^{d_{net}}}
-\newcommand{\inrdin}{\in\R^{d_{in}}}
-\newcommand{\R}{\Re} %{\mathbb{R}}
-\newcommand{\Rm}{\mathbf{R}_{\min}}
+
+\newcommand{\rsa}{\rightsquigarrow}
 \newcommand{\ra}{\rightarrow}
-\newcommand{\om}{\otimes}
-\newcommand{\op}{\oplus}
-\newcommand{\RA}{\Rightarrow}
-\newcommand{\LA}{\Leftarrow}
-%\newcommand{\E}{\mathbb{E}}
-\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+
+\newcommand{\inrdnet}{\in\R^{d_{\text{net}}}}
+\newcommand{\inrdin}{\in\R^{d_{\text{in}}}}
 \newcommand{\lmin}[1]{\lambda_{\min}\left(#1\right)}
-\newcommand{\T}{\mathcal{T}}
-\newcommand{\B}{\mathcal{B}}
-\newcommand{\F}{\mathcal{F}}
-\newcommand{\C}{\mathcal{C}}
-\newcommand{\M}{\mathcal{M}}
-\newcommand{\N}{\mathcal{N}}
+
+%VTK
 \newcommand{\V}{\mathcal{V}}
+
+%Indices
 \newcommand{\I}{\mathcal{I}}
+\newcommand{\Ifeat}{\mathcal{I}^{\text{f}}}
+\newcommand{\Iker}{\mathcal{I}^{\text{ker}}}
+\newcommand{\Iconv}{\mathcal{I}^{\text{cv}}}
+\newcommand{\Ifc}{\mathcal{I}^{\text{fc}}}
+\newcommand{\Iwidth}{\mathcal{I}^{\text{w}}}
 
 
+%Features
 \newcommand{\psiv}{\psi^{\text{v}}}
 \newcommand{\psif}{\psi^{\text{f}}}
 
-\newcommand{\kv}{K^{\text{v}}_{\Theta}}
-\newcommand{\kf}{K^{\text{f}}_{\Theta}}
-\newcommand{\kc}{K^{\text{cross}}_{\Theta}}
 
-%\newcommand{\Tb}{\mathbf{\Theta}}
-%\newcommand{\Tv}{\mathbf{\Theta}^v}
-%\newcommand{\Tw}{\mathbf{\Theta}^w}
-\newcommand{\Tv}{{\Theta}^{\text{v}}}
-\newcommand{\tv}{{\theta^{\text{v}}}}
-\newcommand{\Tf}{{\Theta}^{\text{f}}}
-\newcommand{\tf}{{\theta}^{\text{f}}}
-
-\newcommand{\Tdgn}{\Theta^{\text{DGN}}}
+%Kernel
+\newcommand{\kv}{K^{\text{v}}}
+\newcommand{\kf}{K^{\text{f}}}
+\newcommand{\kc}{K^{\text{cross}}}
 
 
+\newcommand{\yc}{y^{\text{conv}}}
 \newcommand{\din}{d_{\text{in}}}
 \newcommand{\dnet}{d_{\text{net}}}
-\newcommand{\dvnet}{d^{\text{v}}_{\text{net}}}
 \newcommand{\dfnet}{d^{\text{f}}_{\text{net}}}
-\newcommand{\ta}{\theta_\text{a}}
-\newcommand{\tb}{\theta_\text{b}}
-\newcommand{\tone}{\theta_\text{one}}
-\newcommand{\ttwo}{\theta_\text{two}}
+\newcommand{\dvnet}{d^{\text{v}}_{\text{net}}}
 
-\newcommand{\pta}{\partial_{\ta}}
-\newcommand{\ptb}{\partial_{\tb}}
-%\newcommand{\Tg}{\mathbf{\Theta}^g}
+%Expectation
+\newcommand{\E}{\mathbb{E}}
+%\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+
+%Weights
+\newcommand{\tv}{{\theta^{\text{V}}}}
+
+\newcommand{\Tdgn}{\Theta^{\text{DGN}}}
+\newcommand{\Tb}{{\Theta}}
+\newcommand{\Tv}{{\Theta}^{\text{v}}}
+\newcommand{\Tg}{{\Theta}^{\text{f}}}
+\newcommand{\tg}{\theta^{\text{f}}}
 \newcommand{\Tt}{\Theta}
+\newcommand{\Tf}{\Theta^{\textrm{f}}}
 
+%Gates
 \newcommand{\G}{\mathcal{G}}
+\newcommand{\relu}{\gamma_{\text{r}}}
+\newcommand{\softrelu}{\gamma_{\text{sr}}}
+\newcommand{\ut}{U_{\text{tot}}}
 
-\DeclareMathOperator{\argmin}{argmin}
-\DeclareMathOperator{\argmax}{argmax}
+%Norms
 \newcommand{\norm}[1]{\|#1\|}
 \newcommand{\inorm}[1]{\|#1\|_{\infty}}
 \newcommand{\snorm}[1]{\left\|#1\right\|}
 \newcommand{\sinorm}[1]{\left\|#1\right\|_{\infty}}
 
 
-%\newcommand{\eqdef}{\stackrel{\text{\footnotesize def}}{=}}
-%\newcommand{\eqdef}{\stackrel{\Delta}{=}}
-\newcommand{\eqdef}{\doteq}
-\renewcommand{\eqdef}{\stackrel{def}{=}}
-\newcommand{\defeq}{\doteq}
+%Layers
+\newcommand{\dc}{d_{\text{cv}}}
+\newcommand{\dconv}{d_{\text{cv}}}
 
-\newcommand{\eps}{\varepsilon}
-\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\dfc}{d_{\text{fc}}}
+\newcommand{\dres}{d_{\text{rs}}}
+\newcommand{\dblock}{d_{\text{blk}}}
+\newcommand{\wc}{w_{\text{cv}}}
+\newcommand{\wfc}{w_{\text{fc}}}
+\newcommand{\wker}{w_{\text{ker}}}
+\newcommand{\wconv}{w_{\text{cv}}}
+
+
+\newcommand{\ifin}{i_{\text{fin}}}
+\newcommand{\ifout}{i_{\text{fout}}}
+\newcommand{\icin}{i_{\text{cv}}}
+\newcommand{\iin}{i_{\text{in}}}
+\newcommand{\iout}{i_{\text{out}}}
+\newcommand{\iker}{i_{\text{ker}}}
+\newcommand{\iu}{i_{\text{u}}}
+\newcommand{\dgate}{d_{\text{gt}}}
+\newcommand{\dnorm}{d_{\text{nrm}}}
+\newcommand{\dweight}{d_{\text{wt}}}
+
+
+\newcommand{\Igate}{\mathcal{I}_{\text{gt}}}
+\newcommand{\Inorm}{\mathcal{I}_{\text{nrm}}}
+\newcommand{\Iweight}{\mathcal{I}_{\text{wt}}}
+
+\newcommand{\xv}{x^{\text{v}}}
+\newcommand{\xf}{x^{\text{f}}}
 
 \newcommand{\nt}{\nabla_{\Theta}}
-\newcommand{\al}{\mathcal{AL}}
-\newcommand{\aw}{\mathcal{AW}}
-\newcommand{\ap}{\mathcal{AP}}
+
+\newcommand{\Pres}{P^{\text{res}}}
+\newcommand{\Pfc}{P^{\text{fc}}}
+\newcommand{\Pcnn}{P^{\text{cnn}}}
+
+\newcommand{\eqdef}{\stackrel{\Delta}{=}}
+
+%Constants
+\newcommand{\cfc}{C_{\text{fc}}}
+\newcommand{\ccnn}{C_{\text{cv}}}
+\newcommand{\cres}{C_{\text{rs}}}
+\newcommand{\cscale}{c_{\text{scale}}}
+\newcommand{\sigfc}{\sigma_{\text{fc}}}
+\newcommand{\sigcnn}{\sigma_{\text{cv}}}
+
+\newcommand{\bfc}{\beta_{\text{fc}}}
+\newcommand{\bcnn}{\beta_{\text{cv}}}
+\newcommand{\bres}{\beta_{\text{res}}}
 
 \newcommand{\keywords}[1]{{\bf Keywords: } #1\par}
 %\newenvironment{proof}{{\bf Proof:} }{}
@@ -171,7 +223,7 @@
 \def\r{\mathbf{r}}
 \def\p{\mathbf{p}}
 \def\q{\mathbf{q}}
-%\def\R{\mathrm{R}}
+\def\R{\mathrm{R}}
 \def\Re{\mathbb{R}}
 \def\Z{\mathbb{Z}}
 \def\P{\mathcal{P}}
@@ -210,17 +262,3 @@
 %   \fi
 }
 
-\newcommand{\algorithmicinput}{\textbf{Input:} }
-\newcommand{\INPUT}{\item[\algorithmicinput]}
-\newcommand{\algorithmicoutput}{\textbf{Output:} }
-\newcommand{\OUTPUT}{\item[\algorithmicoutput]}
-\newcounter{algostep}
-\newcommand{\Step}[1][\STATE]{#1\textbf{\refstepcounter{algostep}\thealgostep}. }
-
-\newenvironment{algoequation}{\refstepcounter{equation}$}{$\hfill (\theequation)}
-
-\newenvironment{nonfloatalgorithm}[1]{\vspace{1ex}\hrule\vspace{0.5ex} \refstepcounter{algorithm}\textbf{Algorithm \thealgorithm}\hspace{1em} #1 \vspace{0.5ex}\hrule}{\hrule\vspace{1.5ex}\setcounter{algostep}{0}}
-
-\newcounter{acalgorithm}
-
-\newenvironment{nonfloatactorcriticalgorithm}[1]{\vspace{1ex}\hrule\vspace{0.5ex} \textbf{Actor-Critic Algorithm \refstepcounter{acalgorithm}\theacalgorithm}\hspace{1em} #1 \vspace{0.5ex}\hrule\addcontentsline{loa}{algorithm}{\protect\numberline{\theacalgorithm}{\ignorespaces #1}}}{\hrule\vspace{1.5ex}\setcounter{algostep}{0}}

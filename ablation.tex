@@ -1,0 +1,40 @@
+\begin{figure}
+\begin{minipage}{0.6\columnwidth}
+\resizebox{\columnwidth}{!}{
+\includegraphics[scale=0.5]{figs/ablation.png}
+}
+\end{minipage}
+\begin{minipage}{0.3\columnwidth}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{|p{1.75cm}|c|c|c|c|c|}\hline
+& FR-II &FR-DI & DL& FL& ReLU\\\hline
+\centering{FC (MNIST)} &$94.1\%$  &$94.1\%$  &$98.1\%$ &$98.6\%$ &$98.5\%$\\\hline
+\centering{CNN (CIFAR-10)}&$67.5\%$ &$67.6\%$   &$77.6\%$ &$79.4\%$ &$80.4\%$\\\hline
+\end{tabular}
+}
+\end{minipage}
+\caption{\small{$\textrm{C}_i^{\text{f}},\textrm{C}_i^{\text{v}},i\in[4]$ are the convolutional layers, which are followed by \emph{global-average-pooling} (GAP) layer then by a dense layer ($\textrm{D}^{\text{f}}$/$\textrm{D}^{\text{v}}$), and a softmax layer to produce the final logits.}} %`R',  `L', `T' and `NT' stand for random, learnt, trainable and non-trainable respectively.}}
+\label{fig:ablation}
+\end{figure}
+\begin{comment}
+\FloatBarrier
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{1cm}|p{1.6cm}|p{1.7cm}p{0.001cm}|}\hline
+&\centering{FC (MNIST)}& \centering{CNN (CIFAR-10)}& \\\hline
+FR-II& \centering$94.1\%$ & \centering$67.5\%$& \\\hline
+FR-DI& \centering$94.1\%$ & \centering$67.6\%$& \\\hline
+DL& \centering$98.1\%$ & \centering$77.6\%$&\\\hline
+FL& \centering$98.6\%$ & \centering$79.4\%$&\\\hline
+ReLU& \centering$98.5\%$ & \centering$80.4\%$&\\\hline
+\end{tabular}
+\caption{Shows test accuracies in each of the $4$ different regimes. In all the $4$ regimes (FC as well as CNN) the results averaged over the $48$ different modes. In all cases, standard deviation was less than $0.5\%$.}
+\end{table}
+\end{comment}
+\begin{table}
+
+
+
+\caption{Shows test accuracies in each of the $4$ different regimes.  \textbf{In all the $\mathbf{4}$ regimes (FC as well as CNN) the results in this table are averaged over the $\mathbf{48}$ different models ($\mathbf{24\times 2}=48$ models). In all cases, standard deviation was less than $\mathbf{0.5\%}$ and hence not mentioned in the table}.}
+\label{tb:ablation}
+\end{table}
