@@ -16,7 +16,7 @@
 
 % to avoid loading the natbib package, add option nonatbib:
 %    \usepackage[nonatbib]{neurips_2021}
-
+\usepackage{colortbl}
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -28,7 +28,10 @@
 \usepackage{xcolor}         % colors
 \input{pack}
 \usepackage{cleveref}
-\title{Simplifying the neural tangent kernel to explicitise the role of gates, weights, width and depth}
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\title{What Does a Deep Neural Network with Rectified Linear Units Learn?: Mostly Gates (i.e. Hyperplanes)}
 
 % The \author macro works with any number of authors. There are two commands
 % used to separate the names and addresses of multiple authors: \And and \AND.
@@ -75,18 +78,15 @@
 
 \input{abstract}
 \input{intro}
-\input{dual}
-\input{dgn}
+\input{prior}
 \input{fc}
-\input{res}
-\input{conv}
 \input{exp}
 \input{related}
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\input{check}
 \appendix
 
 \section{Appendix}
