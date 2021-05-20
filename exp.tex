@@ -3,10 +3,10 @@
 % Prior vs now what is the difference : robustness + random label etc
 %Datasets are MNIST and CIFAR-10. For MNIST, we use the DGN in \Cref{fig:dgn-prior-new} (right) with fully connected layers instead of the convolutional layers.  All models are trained with `\emph{Adam}'  \cite{adam} (step-size $=3\cdot 10^{-4}$ , batch size $=32$). 
 
-\subsection{Experiment 1: DGN with 4 Gating Regimes and 48 Models}
+\subsection{Experiment 1: DGN with 4 Gating Regimes and 48 Models Per Regime}
 We make use of the deep gated network (DGN) setup shown in \Cref{fig:dgn-prior-new} (right) which is an improvisation of the DGN in prior work [\citenum{npk}] shown in \Cref{fig:dgn-prior-new} (left). 
 
-\textbf{Prior Work (4 Regimes, 1 Model).} 
+\textbf{Prior Work (4 Regimes, 1 Model Per Regime ).} 
 Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of identical architecture namely the feature network and the value network. Both the feature network and value network have $4$ convolutional layers $C1,\ldots,C4$ followed by a global average pooling (GAP) layer, a linear layer and a final `softmax' layer. $\hat{y}_{\text{DGN}}$ is the output of the DGN (performance is measured with respect to this output). $\hat{y}_{\text{f}}$ is used only when we want to \emph{pre-train} the feature network. The feature network has ReLUs, whereas the value network uses the gates from feature network as external masks. Here, $G_1,\ldots,G_4$ are the gates of layers $1,\ldots,4$ of feature network and in the prior setup these are used directly in the value network. The DGN has the following $\mathbf{4}$ {gating regimes} based on the initialisation and trainability of the feature network parameters. In all these regimes, the output of the DGN is $\hat{y}_{\text{DGN}}$. 
 
 \quad 1. \emph{Fixed Random-Dependent Initialisation} (\textbf{FR-DI}): Both value network and feature network are initialised at random and identically, i.e., $\Tf_0=\Tv_0$. Only the value network is trained and the feature network is fixed, i.e., $\Tf_t=\Tf_0,\forall t\geq 0$.
@@ -35,7 +35,7 @@ Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of iden
 \label{fig:dgn-prior-new}
 \end{figure}
 
-\textbf{This Paper (4 Regimes, 48 Models ).} The improvisations are marked in {\color{red}{red}}.  In the current setup, {\bf{$G_{i_1},\ldots,G_{i_4}$ is a permutation of the $G_1,\ldots,G_4$}}, this gives $24$ models. In the prior setup both value and feature networks have the same input $x\in\R^{\din}$. In the current setup, we have two separate inputs, $x^{\text{f}}\in\R^{\din}$ for the feature network and $x^{\text{v}}\in\R^{\din}$ for the value network. We set $x^{\text{f}}=x$ always, however, for $x^{\text{v}}$ there are \textbf{two modes} namely (i) \textbf{standard}: we set $x^{\text{v}}=x$ ,(ii) \textbf{constant}: we set $x^{\text{v}}=\mathbf{1}\in\R^{\din}$ (a tensor of all $1$'s). While the setup on the left is only one model, the setup on the right has $\mathbf{48=24\times 2}$ \textbf{different models}, where $24=\texttt{factorial}(4)$ is due to the gate permutations and $2$ is due to the two different ways of setting $x^{\text{v}}$.
+\textbf{This Paper (4 Regimes, 48 Models Per Regime ).} The improvisations are marked in {\color{red}{red}}.  In the current setup, {\bf{$G_{i_1},\ldots,G_{i_4}$ is a permutation of the $G_1,\ldots,G_4$}}, this gives $24$ models. In the prior setup both value and feature networks have the same input $x\in\R^{\din}$. In the current setup, we have two separate inputs, $x^{\text{f}}\in\R^{\din}$ for the feature network and $x^{\text{v}}\in\R^{\din}$ for the value network. We set $x^{\text{f}}=x$ always, however, for $x^{\text{v}}$ there are \textbf{two modes} namely (i) \textbf{standard}: we set $x^{\text{v}}=x$ ,(ii) \textbf{constant}: we set $x^{\text{v}}=\mathbf{1}\in\R^{\din}$ (a tensor of all $1$'s). While the setup on the left is only one model, the setup on the right has $\mathbf{48=24\times 2}$ \textbf{different models}, where $24=\texttt{factorial}(4)$ is due to the gate permutations and $2$ is due to the two different ways of setting $x^{\text{v}}$.
 
 
 
@@ -60,9 +60,13 @@ Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of iden
 \indent\quad $4.$ \textbf{Gate Learning explain finite vs infinite width.} We group the models into three sets where $S_1=\{$ ReLU, FL , DL$\}$, $S_2=\{$ FR$\}$ and $S_3=\{$ CNTK $\}$, and explain the difference in performance due to gate learning.
  $S_2$ and $S_3$ have no gate learning. However,  $S_3$ due to its infinite width has better averaging resulting in a well formed kernel and hence performs better than $S_2$ which is a finite width. Thus, the difference between $S_2$ and $S_3$ can be attributed to finite versus infinite width. Both $S_1$ and $S_2$ are finite width, and hence, conventional feature learning happens in both $S_1$ and $S_2$, but, $S_1$ with gate learning is better ($77.5\%$ or above in CIFAR-10) than $S_2$ ($67\%$ in CIFAR-10) with no gate learning. Thus neither finite width, nor the conventional feature learning explain the difference between $S_1$ and $S_2$. Thus, `gate learning' discriminates the regimes $S_1, S_2$ and $S_3$ better than the conventional feature learning view.
 
-\indent\quad $5.$ \textbf{Robustness to permutation:} The performance (in all the $4$ regimes) is also robust to permutation of layers. This can be attributed to the product $\Pi_{l=1}^{(d-1)} H^{\text{lyr}}_{l,\Theta}$ of the layer level base kernels being permutation invariant. A particularly striking example of robustness to permutations and constant input is presented in \Cref{fig:visual-permute}. Here,  we contrast the hidden layer outputs of a standard CNN with ReLU with $4$ layers, and that of a DGN which copies the gates from the standard CNN, but, reverses the gating masks when applying to the value network. Also, the value network of the DGN was provided with a fixed random input. Both the models achieve about $80\%$ test accuracy.  This suggests that visually interpreting the hidden layer outputs may not be meaningful.
+\indent\quad $5.$ \textbf{Robustness to layer permutation:} The performance (in all the $4$ regimes) is also robust to permutation of layers. Recall that the NPK expression in \Cref{th:main} is dependent on gating information in the form of $\ip{G_l(x),G_l(x')}$. So robustness to layer permutations is because, even if we permute the layers in the value network, whether or not any given gate triggers for both inputs $x$ and $x'$ remains invariant to this permutation. 
 
-\indent\quad $6.$ \textbf{Robustness to constant input:} The performance (in all the $4$ regimes) is  robust to `all-ones' inputs. Note that in the `all-ones' case, the input information affects the models only via the gates. Here, all the entries of the input Gram matrix are identical, and the NPK depends only on the base kernels.
+\indent\quad $6.$ \textbf{Robustness to constant input:} The performance (in all the $4$ regimes) is  robust to `all-ones' inputs. Note that in the `all-ones' case, the input information affects the models only via the gates. Here, all the entries of the input Gram matrix are identical, and the NPK depends only the correlation between the gates $\ip{G_l(x),G_l(x')}$.
+
+\indent\quad $7.$ \textbf{Are Features Learnt Hierarchically? Yes and No.}
+
+\input{visual}
 
 
 \subsection{Experiment 2: Upstream training with random labels and downstream with true labels}
@@ -70,28 +74,23 @@ Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of iden
 
 \textbf{Q1 (open question).} {When trained with random labels upstream followed by true labels downstream, the test performance of DNNs with ReLUs degrades, Why?}
 
-We hypothesise that the answer to the above question lies in the gates. To confirm our hypothesis, we train in two phases (i) Phase I: upstream training with label noise levels $\gamma=0, 25\%, 50\%, 75\%$ and (ii) Phase II: downstream training with true labels. We then measure the information stored in the gates at the end of each of the two phases. To this end, we consider the DGN setup in \Cref{fig:dgn-prior-new} (left), and train the feature network (which is a DNN with ReLUs). First is `Phase I: Upstream', wherein, we train the feature network for different values of label noise $\gamma=0, 25\%, 50\%, 75\%$, which gives us models M1$(\gamma)$. In order to measure the information in the gates learnt at the end of `Phase I: Upstream', we keep these gates fixed and train the value network with true labels -- this gives us models M2($\gamma$). Second is `Phase II: Downstream', wherein, we start with models M1$(\gamma)$, and perform downstream training with true labels to obtain models M4$(\gamma)$ ($\gamma=0$ is an exception; there is no downstream training because it has been already trained with true labels in upstream).
+\textbf{Setup to answer Q1.} We hypothesise that the answer to the above question lies in the gates. To test our hypothesis, we train in two phases (i) Phase I: upstream training with label noise levels $\gamma=0, 25\%, 50\%, 75\%$ and (ii) Phase II: downstream training with true labels. We then measure the information stored in the gates at the end of each of the two phases. To this end, we consider the DGN setup in \Cref{fig:dgn-prior-new} (left), and train the feature network (which is a DNN with ReLUs). In `Phase I: Upstream', we train the feature network for different values of label noise $\gamma=0, 25\%, 50\%, 75\%$, which gives us models $M1(\gamma)$ (see \Cref{fig:rand-label-setup}). In order to measure the information in the gates learnt at the end of `Phase I: Upstream', we keep these gates fixed and train the value network with true labels -- this gives us models $M2(\gamma)$ (see \Cref{fig:rand-label-setup}). Second is `Phase II: Downstream', wherein, we start with models $M1(\gamma)$, and perform downstream training with true labels to obtain models $M4(\gamma)$ ($\gamma=0$ is an exception; there is no downstream training because $M1(0)$ has been already trained with true labels in upstream).  In order to measure the information in the gates learnt at the end of `Phase II: Downstream', we keep these gates fixed and train the value network with true labels -- this gives us models $M5(\gamma)$ (see \Cref{fig:rand-label-setup}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{figs/rand-label-big.pdf}
+\caption{Shows various models trained in Experiment 2. Here, US and DS stand for upstream and down stream respectively. True for with true labels. Here models $M1$ and $M4$ are feature networks (DNNs with ReLUs), and $M2, M3$ and $M5$ are value networks which use the fixed gates from the feature networks. Models are parameterised by $(\gamma)$ which is the label noise level.}
+\label{fig:rand-label-setup}
+\end{figure}
+
 
 \textbf{Q2 (new question).} {When trained with random labels upstream followed by true labels downstream, \emph{if the gates are fixed throughout and only the weights are trained}, does the test performance degrade?}
 
+\textbf{Setup to answer Q2.} Here, we pick up the models trained at the end of `Phase I: Upstream', use them as feature networks and fix the gates. We then train the value network, first upstream with with $100\%$ random labels, and then downstream with $100\%$ true labels--this gives us models $M3(\gamma)$.
 
-We are interested in measuring the information stored in the gates of a DNN with ReLUs trained with random labels. We are also interested in testing the hypothesis $\mathcal{H}$ : upstream training with random labels followed by downstream training with true labels only affects the gates which is also the reason for the degradation in downstream performance. This hypothesis also means hypothesis $\mathcal{H'}$ : if the gates are fixed then upstream training with random labels followed by downstream training with true labels should not degrade the performance. To this end we do the following
+We now discuss the results of the experiments with random labels shown in \Cref{tb:rand-label} and \Cref{fig:rand-label}. 
 
-\indent \emph{Step 1}. We first train models (DNNs with ReLUs namely) $M1, M4(25)$ and $M4(50)$ with no label noise (i.e., true lables), $\gamma=25\%$ label noise and $\gamma =50\%$ label noise respectively.
-
-\indent \emph{Step 2}. In order to measure the information stored in the gates, we use the gates of pre-trained models $M1, M4(25)$ and $M4(50)$ as external masks in value networks $M2$, $M5(25)$ and $M5(50)$, and train the value networks $M2$, $M4(25)$ and $M(50)$ using dataset with true labels.
-
-\indent \emph{Step 3}. In order to measure the robustness of the gates, we use the gates of pre-trained models $M1, M4(25)$ and $M4(50)$ as external masks in value networks $M3$, $M6(25)$ and $M6(50)$. We first perform downstream training of the value networks $M3$, $M6(25)$ and $M6(50)$ with a dataset containing $100\%$ label noise and then we perform upstream training of these models with dataset containing all true labels.
-
-\indent \emph{Step 4.} We then perform downstream training of models $M4(25)$ and $M4(50)$ with true labels to yield models $M7(25)$ and $M7(50)$ respectively. We then measure the information in the gates of $M7(25)$ and $M7(50)$ by using their gates as external masks in value networks $M8(25)$ and $M8(50)$ and training them with true labels.
-
-The entire process can be thought of as two phases namely  `Phase I', which is upstream training with random labels followed by `Phase II' which is downstream training with true labels. In both `Phase I and II', we measure the information stored in the gates under two cases (i) \emph{FLG 1:} training the value network with true labels and (ii) \emph{FLG 2:} training the value network with first $100\%$ label noise followed by true labels. `FLG 2' is to verify the hypothesis $\mathcal{H'}$. In the case of training with no label noise, there is only a single phase, in which we have the two cases.
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.3]{figs/rand-label.pdf}
-\end{figure}
-
+\textbf{Answer to Q2.} \emph{When the gates are fixed test performance is robust to upstream training with random labels.} In  \Cref{tb:rand-label}, look at the performance of $M2(\gamma=0)$ and compare it performance of  $M4(\gamma), \gamma=25,50.75$. When the gates are fixed, the upstream training with even $100\%$ label noise does not hurt the test performance so much (less than $2\%$ for $\gamma=100$) in comparison to the cases when the gates are allowed to change (as it is the case of DNN with ReLUs), the test performance degrades (from $81.2$) to $76.9$ ( $ 4.3\%$ for $\gamma=25$), $73.6$ ( $7.6\%$ for $\gamma=50$) and  $68.1$ ($13.1\%$ for $\gamma=75$) for even less than $100\%$ label noise.
 
 
 
@@ -108,25 +107,49 @@ $\gamma$& Best & End & True& US/DS & True & True\\\hline\arrayrulecolor{white}\m
 0 &{\bf{81.2}}{\tiny $\pm$ 0.3} & 80.0{\tiny $\pm$ 0.4} &{\bf{80.3}}{\tiny $\pm$ 0.2} & {\bf{79.3}}{\tiny $\pm$ 0.4} &-&- \\\hline\hline
 {25}&76.1{\tiny $\pm$ 0.6} & 63.1{\tiny $\pm$ 0.7}& 74.7{\tiny $\pm$ 0.5}& 72.3{\tiny $\pm$ 0.2}&76.9{\tiny $\pm$ 0.1}&76.9{\tiny $\pm$ 0.4}\\\hline\hline
 {50}&70.9{\tiny $\pm$ 0.8} & 41.5{\tiny $\pm$ 1.1}& 69.9{\tiny $\pm$ 0.3} & 66.8{\tiny $\pm$ 0.1}&73.4{\tiny $\pm$ 0.3}&73.6{\tiny $\pm$ 0.4}\\\hline\hline
-{75}&58.2{\tiny $\pm$ 1.0} & 19.5{\tiny $\pm$ 6.0}& 64.6{\tiny $\pm$ 0.9} &60.8{\tiny $\pm$ 0.3}&69.9{\tiny $\pm$ 0.9}&68.9{\tiny $\pm$ 0.9}\\\hline
+{75}&56.9{\tiny $\pm$ 0.4} & 23.4{\tiny $\pm$ 0.4}& 63.9{\tiny $\pm$ 0.4} &60.0{\tiny $\pm$ 0.3}&68.1{\tiny $\pm$ 0.4}&67.7{\tiny $\pm$ 0.6}\\\hline
 \arrayrulecolor{black}\bottomrule
 Models & \multicolumn{2}{c}{M1($\gamma$)} & M2($\gamma$) & M3($\gamma$)& M4($\gamma$) & M5($\gamma$)\\\bottomrule
 \end{tabularx}
-
+\caption{Shows the performance of the various models in Experiment 2.}
+\label{tb:rand-label}
 \end{table}
 
 
+\textbf{Answer to Q1.} \emph{When training with random labels upstream, the test performance degrades because the gates get degraded.} This follows from the fact that the performance of the DNN with ReLUs at the end of `Phase II: Downstream', i.e., $M4$ and that of the value network with the fixed gates at end of `Phase II: Downstream', i.e., $M5$ are approximately equal (within $0.5\%$). 
 
+\textbf{Gates are fairly robust to random labels.} Note that while training with random labels upstream, the test performance initially improves, reaches a peak and then degrades (see top row of \Cref{fig:rand-label}). The performance of the DNN with ReLUs at the end of `Phase I' is shown in the second column of \Cref{tb:rand-label}. However, the performance of the fixed gates at the end of `Phase I' shown in third column of \Cref{tb:rand-label} is much better and is more closer to the performance of the downstream model $M4$. This means, during upstream training with random labels, the performance degradation post the peak value mostly affects only the weights and not the gates.
 
 
 \begin{figure}[h]
+\begin{minipage}{0.99\columnwidth}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{ccc}
+\includegraphics[scale=0.125]{figs/relu_25.pdf}&
+\includegraphics[scale=0.125]{figs/relu_50.pdf}&
+\includegraphics[scale=0.125]{figs/relu_75.pdf}
+\\
+\includegraphics[scale=0.125]{figs/relu_25_good.pdf}&
+\includegraphics[scale=0.125]{figs/relu_50_good.pdf}&
+\includegraphics[scale=0.125]{figs/relu_75_good.pdf}\\
+\end{tabular}
+}
+\end{minipage}
+\caption{Shows the upstream training with random labels followed downstream training with true labels. The first epochs of bottom plots is same as the epoch follows the last epoch in the top plots.}
+\label{fig:rand-label}
+
+\end{figure}
+
+
 \begin{comment}
+\begin{figure}[h]
+%\begin{comment}
 \begin{minipage}{0.4\columnwidth}
 \resizebox{\columnwidth}{!}{
 \includegraphics[scale=0.35]{figs/rand-label.pdf}
 }
 \end{minipage}
-\end{comment}
+%\end{comment}
 \begin{minipage}{0.99\columnwidth}
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{cccccc}
@@ -155,9 +178,12 @@ Models & \multicolumn{2}{c}{M1($\gamma$)} & M2($\gamma$) & M3($\gamma$)& M4($\ga
 }
 \end{minipage}
 
-
+\label{fig:rand-label}
 
 \end{figure}
+
+\end{comment}
+
 
 \begin{comment}
 \begin{figure}[h]
@@ -187,20 +213,3 @@ Noise & \multicolumn{2}{c|}{Rand. US} & True & \multicolumn{1}{c|}{\multirow{2}{
 \end{figure}
 \end{comment}
 
-
-
-
-\subsection{Experiment 3: Adversarial Transferability via Gates}
-
-
-\subsection{Experiment 4: Training only the gates}
-
-
-\subsection{Experiment 5: Are Features Learnt Hierarchically? Yes and No.}
-
-\input{visual}
-
-
-
-\indent\quad $3.$ \emph{Gate Only Training:} In this setting, both value network and the feature network are initialised at random. However, only the feature network is trained and the value network weights are kept fixed. We observe about $65\%$ test accuracy on CIFAR-10 by just training the gates. This experiment can be interpreted as tuning the gates in such a manner to select the right sub-network of random weights.
- 
