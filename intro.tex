@@ -1,5 +1,5 @@
 \section{Introduction}
-Understanding the inner working of deep neural networks (DNNs) is an important problem in machine learning. Recent works have connected the training and generalisation of deep neural networks (DNNs) to kernel methods. An important kernel associated with a DNN is its \emph{neural tangent kernel} (NTK), which, for a pair of input examples $x,x'\in\R^{\din}$, and network weights $\Theta\in\R^{\dnet}$, is given by:
+Understanding the inner workings of deep neural networks (DNNs) is an important problem in machine learning. Recent works have connected the training and generalisation of DNNs to kernel methods. An important kernel associated with a DNN is its \emph{neural tangent kernel} (NTK), which, for a pair of input examples $x,x'\in\R^{\din}$, and network weights $\Theta\in\R^{\dnet}$, is given by:
 \begin{align*}
  \text{NTK}(x,x')\quad = \quad \ip{\nabla_{\Theta}\hat{y}(x), \nabla_{\Theta}\hat{y}(x')}, 
 \end{align*}
@@ -50,7 +50,8 @@ We show via experiments the following properties :
 \item Feature extraction can be completely linear and separate from gating and the weights.
 %\item Adversarial examples can attack the model solely via the linear component.
 \end{enumerate}
-\textbf{Technical Extension (Appendix).} In addition, we also extend the dual view to cover the cases of convolutions with pooling and skip connections. We show that convolutional layers with pooling makes the NPK \emph{rotationally invariant} (this property has already been noted to hold for the NTK). We also consider a residual network (ResNet) architecture with $(b+2)$ blocks of fully connected networks with `$b$' skip connections between them. Within this ResNet there are $i=1,\ldots,2^b$ possible fully connect networks, and then $\text{NPK}^{\text{residual}}=\sum_{i=1}^{2^b} C_i \text{NPK}^{\text{dense}}_i$, where $C_i>0$ are positive constants.
+\textbf{Technical Extension (Appendix).} In addition, we also extend the dual view to cover the cases of convolutions with pooling and skip connections. We show that convolutional layers with pooling makes the NPK \emph{rotationally invariant} and skip connections endow a \emph{sum of product of base kernels} structure to the NPK.
+% (this property has already been noted to hold for the NTK). We also consider a residual network (ResNet) architecture with $(b+2)$ blocks of fully connected networks with `$b$' skip connections between them. Within this ResNet there are $i=1,\ldots,2^b$ possible fully connect networks, and then $\text{NPK}^{\text{residual}}=\sum_{i=1}^{2^b} C_i \text{NPK}^{\text{dense}}_i$, where $C_i>0$ are positive constants.
 \begin{comment}
 
 CNN, Resnet to say that the framework can be extended successfully.

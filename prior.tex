@@ -1,6 +1,6 @@
 \section{Prior Work on Duality: Neural Path Framework}\label{sec:dual}
 In this section, we will present a brief overview of dual view for fully connected DNN (FC-DNN) with ReLU as presented in [\citenum{npk}]. 
-
+\begin{comment}
 \subsection{Input Output Relationship in Fully Connected DNN: Primal View }
 We consider fully-connected DNNs with `$w$' hidden units per layer and `$d-1$' hidden layers. $\Theta\in\R^{\dnet}$ are the network weights, where $\dnet=\din w+(d-2)w^2+w$. The information flow is shown in \Cref{tb:basic}, where
 $\Theta(i,j,l)$ is the weight connecting the $j^{th}$ hidden unit of layer $l-1$ to the $i^{th}$ hidden unit of layer $l$. Further, $\Theta(\cdot,\cdot,1)\in\R^{w\times \din}, \Theta(\cdot,\cdot,l)\in\R^{w\times w},\forall l\in\{2,\ldots,d-1\}, \Theta(\cdot,\cdot,d)\in\R^{1\times w}$.
@@ -16,7 +16,7 @@ Final Output&: & $\hat{y}_{\Theta}(x)$ & $=$ & $\sum_{j\in[w]} \Theta(1,j,d-1)\c
 \caption{Here, $l\in[d-1],i\in[w]$, $j\in[\din]$ for $l=1$ and $j\in[w]$ for $l=2,\ldots,d-1$.} 
 \label{tb:basic}
 \end{table}
-
+\end{comment}
 
 \subsection{Encoding Gates and Weights: Neural Path Feature (NPF) and Neural Path Value (NPV)}
 \begin{definition}
@@ -43,15 +43,16 @@ In a FC-DNN with `$d$' layers and  $w$  hidden units in each layer, there are $\
 
 
 \subsection{Deep Gated Network : Decoupling Gates (NPV) and Weights (NPF) }\label{sec:dgn}
-\begin{comment}
+%\begin{comment}
 \begin{wrapfigure}{r}{0.3\textwidth}
 \centering
 \includegraphics[scale=0.25]{figs/dgn-nips.pdf}
 \caption{DGN}
 \label{fig:dgn}
 \end{wrapfigure}
-\end{comment}
+%\end{comment}
 
+\begin{comment}
 \begin{figure}[h]
 
 \begin{minipage}{0.25\columnwidth}
@@ -74,6 +75,7 @@ $z_{x,\Theta}(i,l)=q_{x,\Theta}(i,l)\cdot G_{x,\Theta}(i,l)$ & $z_{x,\Theta}(i,l
 \caption{DGN}
 \label{fig:dgn}
 \end{figure}
+\end{comment}
 
 Note that since $\hat{y}_{\Theta}(x)=\ip{\phi_{x,\Theta},v_{\Theta}}$, during training, as $\Theta$ is learnt, both the NPFs and NPV are also learnt. Hence, in order to understand the roles of $\phi_{x,\Theta}$ and $v_{\Theta}$ it is a good idea to separate them. This is achieved by the deep gated network (DGN) setup (see \Cref{fig:dgn}), which has two networks namely the \emph{feature network} parameterised by $\Tf\in\R^{d^{\text{f}}_{\text{net}}}$ which holds the NPFs (i.e., the gating information) and a \emph{value network} parameterised by $\Tv\in\R^{d^{\text{v}}_{\text{net}}}$ which holds the NPV.  The combined parameterisation is denoted by $\Theta^{\text{DGN}}=(\Tf,\Tv)\in \R^{d^{\text{f}}_{\text{net}}+d^{\text{v}}_{\text{net}}}$.  
 
