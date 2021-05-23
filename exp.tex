@@ -1,10 +1,15 @@
 \section{Numerical Experiments}\label{sec:exp} 
- 
+In what follows, \Cref{sec:exp1} is themed around the key insight obtained from \Cref{th:main}, i.e., the correlation of the gates lies at the heart of `what is learnt in a DNN with ReLUs'. In particular, we show that operations (such as permuting the layers, shifting and rotating the gates, and giving a constant input to the value network) that destroy the layer by layer computational structure do not degrade test performance. These operations lead to combinatorially many models and in all of them the test performance remains the same. In \Cref{sec:exp2} we throw light on the open question in \citenum{randlabel} on why test performance degrades due to upstream training with random labels.
 % Prior vs now what is the difference : robustness + random label etc
 %Datasets are MNIST and CIFAR-10. For MNIST, we use the DGN in \Cref{fig:dgn-prior-new} (right) with fully connected layers instead of the convolutional layers.  All models are trained with `\emph{Adam}'  \cite{adam} (step-size $=3\cdot 10^{-4}$ , batch size $=32$). 
+\subsection{Experiment 1: Destroying layer-by-layer structure does not affect performance}\label{sec:exp1}
+The aim of the experiment is to investigate the information in the gates and to show that it is invariant even if we destroy the layer-by-layer structure. The gates themselves are basically of three kinds as described below.
+$1.$ Fixed Learnt: We \emph{pre-train} the feature network (which is a DNN with ReLUs), then \emph{freeze} the weights of the feature network, and then train the value network. This way we can measure information in the gates of a trained DNN.\\
+$2.$ Fixed Random: We initialise the feature network at random, and then \emph{freeze} its weights and then train the value network. This way we can measure information in the gates of a DNN at initialisation. Here, the feature and value network can be either initialised with the same weights (i.e., dependent initialisation) or statistically independent weights (i.e., independent initialisation).
+$3.$ Decoupled Learning: We initialise the weights of the value and feature network statistically independent and then train both of them. For the gradient to flow through the feature network we use \emph{soft-gating}, i.e., $G(q)=\frac{1}{1+\exp{-\beta\cdot q}}$, with $\beta=10$. 
 
-\subsection{Experiment 1: DGN with 4 Gating Regimes and 48 Models Per Regime}
-We make use of the deep gated network (DGN) setup shown in \Cref{fig:dgn-prior-new} (right) which is an improvisation of the DGN in prior work [\citenum{npk}] shown in \Cref{fig:dgn-prior-new} (left). 
+
+
 
 \textbf{Prior Work (4 Regimes, 1 Model Per Regime ).} 
 Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of identical architecture namely the feature network and the value network. Both the feature network and value network have $4$ convolutional layers $C1,\ldots,C4$ followed by a global average pooling (GAP) layer, a linear layer and a final `softmax' layer. $\hat{y}_{\text{DGN}}$ is the output of the DGN (performance is measured with respect to this output). $\hat{y}_{\text{f}}$ is used only when we want to \emph{pre-train} the feature network. The feature network has ReLUs, whereas the value network uses the gates from feature network as external masks. Here, $G_1,\ldots,G_4$ are the gates of layers $1,\ldots,4$ of feature network and in the prior setup these are used directly in the value network. The DGN has the following $\mathbf{4}$ {gating regimes} based on the initialisation and trainability of the feature network parameters. In all these regimes, the output of the DGN is $\hat{y}_{\text{DGN}}$. 

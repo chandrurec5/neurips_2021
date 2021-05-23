@@ -36,7 +36,7 @@ The gates are treated as masks and are decoupled from the weights by storing the
 
 
 \subsection{Our Contribution}
-%\begin{comment}
+\begin{comment}
 Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. In this paper, we further simplify this down to the gates. We `re-write' \eqref{eq:ntk-npk-relation} (a simple step) in the form of a \emph{product kernel} given by:
 \begin{align}\label{eq:main}
 \text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
@@ -48,7 +48,7 @@ Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network 
 \text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
  \end{align}
 where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. Product kernel in \eqref{eq:main} leads to the following interpretation: the basic building units are the gates; the gates of a layer `$l$' yield the binary feature $G_l(x)$; at the heart are the \textbf{base kernels  $\frac{\ip{G_l(x),G_l(x')}}w$ which measure the \emph{correlation of gates}} (in contrast to correlation of outputs as in Neural Gaussian Process kernel \citenum{convgp,fcgp}); width gives averaging (division by $w$); laying out the gates as masks depth-wise and connecting them with weights in the form of a network provides the product structure $\Pi_{l=1}^{d-1} (\cdot)$\footnote{Mere concatenation (instead of a network layout) of the gates as $\varphi(x)=(G_l(x),l=1,\ldots,d-1)\in\{0,1\}^{(d-1)w}$ gives the kernel $\ip{\varphi(x),\varphi(x')}=\sum_{l=1}^{d-1}\frac{\ip{G_l(x),G_l(x')}}w$, i.e., a \textbf{sum  (not product)} of base kernels.}. To our knowledge, \eqref{eq:main} is the simplest kernel expression in literature that analytically characterises `what' is learnt in a DNN with ReLUs, and explicitises roles of depth, width and gates. Expression \eqref{eq:main} suggests that `correlation of the gates' is key and any operation that does not disturb it should not degrade the performance. 
-%\end{comment}
+\end{comment}
 Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. In this paper, we further simplify this down to the gates. We `re-write' \eqref{eq:ntk-npk-relation} (a simple step) in the form of a \emph{product kernel} given by:
 \begin{align}\label{eq:main}
 \text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
@@ -61,7 +61,7 @@ where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$
 
 %\item Adversarial examples can attack the model solely via the linear component.
 \end{enumerate}
-\textbf{Technical Extension (Appendix).} In addition, we also extend the dual view to cover the cases of convolutions with pooling and skip connections. We show that convolutional layers with pooling makes the NPK \emph{rotationally invariant} and skip connections endow a \emph{sum of product of base kernels} structure to the NPK.
+\textbf{Technical Extension.} We also extend the dual view to cover the cases of convolutions with pooling and skip connections. We show that convolutional layers with pooling makes the NPK \emph{rotationally invariant} and skip connections endow a \emph{sum of product of base kernels} structure to the NPK.
 % (this property has already been noted to hold for the NTK). We also consider a residual network (ResNet) architecture with $(b+2)$ blocks of fully connected networks with `$b$' skip connections between them. Within this ResNet there are $i=1,\ldots,2^b$ possible fully connect networks, and then $\text{NPK}^{\text{residual}}=\sum_{i=1}^{2^b} C_i \text{NPK}^{\text{dense}}_i$, where $C_i>0$ are positive constants.
 \begin{comment}
 
