@@ -1,5 +1,5 @@
 \section{Introduction}
-Understanding the inner workings of deep neural networks (DNNs) is an important problem in machine learning. Recent works have connected the training and generalisation of DNNs to kernel methods. An important kernel associated with a DNN is its \emph{neural tangent kernel} (NTK), which, for a pair of input examples $x,x'\in\R^{\din}$, and network weights $\Theta\in\R^{\dnet}$, is given by:
+Understanding the inner workings of deep neural networks (DNNs) is an important problem in machine learning. Recent works \citenum{ntk,arora2019exact,cao2019generalization} have connected the training and generalisation of DNNs to kernel methods. An important kernel associated with a DNN is its \emph{neural tangent kernel} (NTK), which, for a pair of input examples $x,x'\in\R^{\din}$, and network weights $\Theta\in\R^{\dnet}$, is given by:
 \begin{align*}
  \text{NTK}(x,x')\quad = \quad \ip{\nabla_{\Theta}\hat{y}(x), \nabla_{\Theta}\hat{y}(x')}, 
 \end{align*}
@@ -36,18 +36,29 @@ The gates are treated as masks and are decoupled from the weights by storing the
 
 
 \subsection{Our Contribution}
-Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. In this paper, we further simplify this down to the gates. We first `re-write' \eqref{eq:ntk-npk-relation} in the form of a \emph{product kernel} given by:
+%\begin{comment}
+Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. In this paper, we further simplify this down to the gates. We `re-write' \eqref{eq:ntk-npk-relation} (a simple step) in the form of a \emph{product kernel} given by:
 \begin{align}\label{eq:main}
 \text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
  \end{align}
-where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. Product kernel in \eqref{eq:main} leads to the following interpretation: the basic building units are the gates which form the binary feature $G_l(x)$; each layer has an associated \emph{base kernel} given by $\frac{\ip{G_l(x),G_l(x')}}w$, where width gives averaging (division by $w$) ; depth provides product structure $\Pi_{l=1}^{d-1} (\cdot)$. To our knowledge, \eqref{eq:main} is the simplest kernel expression in literature that analytically characterises `what' is learnt in a DNN with ReLUs, and explicitises roles of depth, width and gates. At the heart is the base kernel  $\frac{\ip{G_l(x),G_l(x')}}w$ which measures the \emph{correlation of gating activity} (as opposed to correlation of outputs or gradients).
+where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. Product kernel in \eqref{eq:main} leads to the following interpretation: the basic building units are the gates which form the binary feature $G_l(x)$; each layer has an associated \emph{base kernel} given by $\frac{\ip{G_l(x),G_l(x')}}w$, where width gives averaging (division by $w$); laying out the gates as masks depth-wise and connecting them with weights in the form of network provides the product structure $\Pi_{l=1}^{d-1} (\cdot)$\footnote{Mere concatenation (instead of a network layout) of the gates as $\varphi(x)=(G_l(x),l=1,\ldots,d-1)\in\{0,1\}^{(d-1)w}$ gives the kernel $\ip{\varphi(x),\varphi(x')}=\sum_{l=1}^{d-1}\frac{\ip{G_l(x),G_l(x')}}w$, i.e., a sum  (not product) of base kernels.}. To our knowledge, \eqref{eq:main} is the simplest kernel expression in literature that analytically characterises `what' is learnt in a DNN with ReLUs, and explicitises roles of depth, width and gates. At the heart is the base kernel  $\frac{\ip{G_l(x),G_l(x')}}w$ which measures the \emph{correlation of gating activity} (in contrast to correlation of outputs as in Neural Gaussian Process kernel \cite{convgp,fcgp}).
 
-We show via experiments the following properties :
+Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. In this paper, we further simplify this down to the gates. We `re-write' \eqref{eq:ntk-npk-relation} (a simple step) in the form of a \emph{product kernel} given by:
+\begin{align}\label{eq:main}
+\text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
+ \end{align}
+where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. Product kernel in \eqref{eq:main} leads to the following interpretation: the basic building units are the gates; the gates of a layer `$l$' yield the binary feature $G_l(x)$; at the heart are the \textbf{base kernels  $\frac{\ip{G_l(x),G_l(x')}}w$ which measure the \emph{correlation of gates}} (in contrast to correlation of outputs as in Neural Gaussian Process kernel \citenum{convgp,fcgp}); width gives averaging (division by $w$); laying out the gates as masks depth-wise and connecting them with weights in the form of a network provides the product structure $\Pi_{l=1}^{d-1} (\cdot)$\footnote{Mere concatenation (instead of a network layout) of the gates as $\varphi(x)=(G_l(x),l=1,\ldots,d-1)\in\{0,1\}^{(d-1)w}$ gives the kernel $\ip{\varphi(x),\varphi(x')}=\sum_{l=1}^{d-1}\frac{\ip{G_l(x),G_l(x')}}w$, i.e., a \textbf{sum  (not product)} of base kernels.}. To our knowledge, \eqref{eq:main} is the simplest kernel expression in literature that analytically characterises `what' is learnt in a DNN with ReLUs, and explicitises roles of depth, width and gates. Expression \eqref{eq:main} suggests that `correlation of the gates' is key and any operation that does not disturb it should not degrade the performance. 
+%\end{comment}
+Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. In this paper, we further simplify this down to the gates. We `re-write' \eqref{eq:ntk-npk-relation} (a simple step) in the form of a \emph{product kernel} given by:
+\begin{align}\label{eq:main}
+\text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w, 
+ \end{align}
+where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. The main message is that \textbf{\emph{correlation of gates} $\ip{G_l(x),G_l(x')}$} characterises `what is learnt by DNNs with ReLUs'. We support our theory by the following experiments.
 \begin{enumerate}
-\item Gates are robust to layers permutations, and arbitrary tiling cum rotation.
-\item Gates are robust to  training and testing with a constant input. 
-\item Gates are resist against to training first with random labels and then with true labels. 
-\item Feature extraction can be completely linear and separate from gating and the weights.
+\item \textbf{Robustness of Gates:} We show that operations such as (i) permutation of layers, (ii) arbitrary tiling cum rotation of the gates, (iii) providing constant input, that destroy the \emph{layer-by-layer} information processing do not degrade performance because the `correlation of gates' is invariant to these operations.
+\item \textbf{Gates and Random Labels:} It was recently reported \citenum{randlabel} that upstream training with random labels followed by downstream training with true labels degrades test performance. We show that this degradation is due to the fact that random labels affect the gates, and gates do resist such degradation to a large extent. Further, if the gates are fixed, upstream training by random labels does not significantly degrade test performance.
+\item \textbf{An Interpretable Gated Network:} We build two deep gated networks in which feature extraction is fully linear and is separate from the gating and the weights -- these achieve $75\%$ and $90\%$ of CIFAR-10.
+
 %\item Adversarial examples can attack the model solely via the linear component.
 \end{enumerate}
 \textbf{Technical Extension (Appendix).} In addition, we also extend the dual view to cover the cases of convolutions with pooling and skip connections. We show that convolutional layers with pooling makes the NPK \emph{rotationally invariant} and skip connections endow a \emph{sum of product of base kernels} structure to the NPK.
