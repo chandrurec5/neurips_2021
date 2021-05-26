@@ -56,10 +56,10 @@ The total number of `active' paths for both $x$ and $x'$ that pass through input
 \begin{lemma}[Neural Path Kernel (NPK)]\label{lm:npk}
 Let $D\in\R^{\din}$ be a vector of non-negative entries  and for $u,u'\in\R^{\din}$ , let $\ip{u,u'}_{D}=\sum_{i=1}^{\din}D(i)u(i)u'(i)$. Let $H_{\Theta}(x,x')\eqdef\langle\phi_{x,\Theta},\phi_{x',\Theta} \rangle$ be the neural path kernel (NPK). Then  
 \begin{align*} 
- H_{\Theta}(x,x')=\ip{x,x'}_{\Lambda_{\Theta}(\cdot,x,x')} 
+\text{NPK}_{\Theta}(x,x')= H_{\Theta}(x,x')=\ip{x,x'}_{\Lambda_{\Theta}(\cdot,x,x')} 
 \end{align*}
 \end{lemma}
-
+\textbf{Remark.} In the case of fully connected networks, $\textbf{overlap}_{\Theta}(i,x,x')$ is equal for all $i\in[\din]$, and hence $\text{NPK}_{\Theta}(x,x')=\ip{x,x'}\cdot\textbf{overlap}_{\Theta}(x,x')$.
 
 \subsection{Deep Gated Network : Decoupling Gates (NPV) and Weights (NPF) }\label{sec:dgn}
 \begin{comment}
@@ -71,7 +71,7 @@ Let $D\in\R^{\din}$ be a vector of non-negative entries  and for $u,u'\in\R^{\di
 \end{wrapfigure}
 \end{comment}
 
-Since $\hat{y}_{\Theta}(x)=\ip{\phi_{x,\Theta},v_{\Theta}}$, during training, as $\Theta$ is learnt, both the NPFs and NPV are also learnt. To understand their roles better, $\phi_{x,\Theta}$ and $v_{\Theta}$ have to be separated.  This is achieved by the deep gated network (DGN) setup (see \Cref{fig:dgn}), which has two networks of \emph{identical architecture} namely the \emph{feature network} ($\Tf\in\R^{d^{\text{f}}_{\text{net}}}$) which holds the NPFs (i.e., the gating information) and a \emph{value network} ($\Tv\in\R^{d^{\text{v}}_{\text{net}}}$) which holds the NPV.  The combined parameterisation is denoted by $\Theta^{\text{DGN}}=(\Tf,\Tv)\in \R^{d^{\text{f}}_{\text{net}}+d^{\text{v}}_{\text{net}}}$.  The feature network is a DNN with ReLUs and the value network is a DNN with \emph{Gated Linear Units (GaLUs)} (terminology used in \citenum{sss}) whose output is the product of its pre-activation input $q^{\text{v}}(x)$and the external gating signal $G^{\text{f}}(x)$ (see \Cref{fig:dgn}). The main output of the DGN is $\hat{y}(x)$, while the other output $\hat{y}_{\text{f}}(x)$ (shown in \Cref{fig:dgn}) is used to \emph{learn/pre-train} the gates (see \Cref{sec:exp}).
+Since $\hat{y}_{\Theta}(x)=\ip{\phi_{x,\Theta},v_{\Theta}}$, during training, as $\Theta$ is learnt, both the NPFs and NPV are also learnt. To understand their roles better, $\phi_{x,\Theta}$ and $v_{\Theta}$ have to be separated.  This is achieved by the deep gated network (DGN) setup (see \Cref{fig:dgn}), which has two networks of \emph{identical architecture} namely the \emph{feature network} ($\Tf\in\R^{d^{\text{f}}_{\text{net}}}$) which holds the NPFs (i.e., the gating information) and a \emph{value network} ($\Tv\in\R^{d^{\text{v}}_{\text{net}}}$) which holds the NPV.  The combined parameterisation is denoted by $\Theta^{\text{DGN}}=(\Tf,\Tv)\in \R^{d^{\text{f}}_{\text{net}}+d^{\text{v}}_{\text{net}}}$.  The feature network is a DNN with ReLUs and the value network is a DNN with \emph{Gated Linear Units (GaLUs)} (terminology used in \citenum{sss}) whose output is the product of its pre-activation input $q^{\text{v}}(x)$and the external gating signal $G^{\text{f}}(x)$ (see \Cref{fig:dgn}). In \Cref{fig:dgn}, the main output of the DGN is $\hat{y}(x)$, while the other output $\hat{y}_{\text{f}}(x)$ is used to \emph{learn/pre-train} the gates (see \Cref{sec:exp}).
 
 \begin{figure}[h]
 \begin{minipage}{0.38\columnwidth}
@@ -84,11 +84,11 @@ Since $\hat{y}_{\Theta}(x)=\ip{\phi_{x,\Theta},v_{\Theta}}$, during training, as
 \hfill
 %\begin{flushright}
 \begin{minipage}{0.55\columnwidth}
-\begin{proposition}\label{prop:ntks} Let $\kv_{\Tdgn}(x,x')=\ip{ \nabla_{\Tv}\hat{y}(x), \nabla_{\Tv}\hat{y}(x')}$, and  $\kf_{\Tdgn}(x,x')=\ip{ \nabla_{\Tf}\hat{y}(x), \nabla_{\Tf}\hat{y}(x') }$ and $K_{\Tdgn}(x,x')$ be the NTK of the DGN. Then 
+\begin{proposition}\label{prop:ntks} Let $\kv_{\Tdgn}(x,x')=\ip{ \nabla_{\Tv}\hat{y}_{\text{DGN}}(x), \nabla_{\Tv}\hat{y}_{\text{DGN}}(x')}$, and  $\kf_{\Tdgn}(x,x')=\ip{ \nabla_{\Tf}\hat{y}_{\text{DGN}}(x), \nabla_{\Tf}\hat{y}_{\text{DGN}}(x') }$ and $K_{\Tdgn}(x,x')$ be the NTK of the DGN. Then 
 \begin{align*}
 K_{\Tdgn}(x,x')=\kv_{\Tdgn}(x,x')+\kf_{\Tdgn}(x,x')
 \end{align*}
-\textbf{Remarks.} $\nabla_{\Tf}\hat{y}(x)$ flows via the feature network and $\nabla_{\Tv}\hat{y}(x)$ via the value network. Correspondingly there are two NTKs, i.e., $\kf$ and $\kv$. If the gates are fixed then, $\nabla_{\Tf}\hat{y}(x)=\mathbf{0}$ and hence $\kf_{\Tdgn}(x,x')=0$. 
+\textbf{Remarks.} $\nabla_{\Tf}\hat{y}_{\text{DGN}}(x)$ flows via the feature network and $\nabla_{\Tv}\hat{y}_{\text{DGN}}(x)$ via the value network. Correspondingly there are two NTKs, i.e., $\kf$ and $\kv$. If the gates are fixed then, $\nabla_{\Tf}\hat{y}_{\text{DGN}}(x)=\mathbf{0}$ and $\kf_{\Tdgn}(x,x')=0$. 
 \end{proposition}
 %The deep gated network (DGN) setup (see \Cref{fig:dgn}), which has two networks namely the \emph{feature network} parameterised by $\Tf\in\R^{d^{\text{f}}_{\text{net}}}$ which holds the NPFs (i.e., the gating information) and a \emph{value network} parameterised by $\Tv\in\R^{d^{\text{v}}_{\text{net}}}$ which holds the NPV.  The combined parameterisation is denoted by $\Theta^{\text{DGN}}=(\Tf,\Tv)\in \R^{d^{\text{f}}_{\text{net}}+d^{\text{v}}_{\text{net}}}$.  
 \end{minipage}

@@ -1,36 +1,23 @@
 \section{Numerical Experiments}\label{sec:exp} 
-In what follows, \Cref{sec:exp1} is themed around the key insight obtained from \Cref{th:main}, i.e., the correlation of the gates lies at the heart of `what is learnt in a DNN with ReLUs'. In particular, we show that operations (such as permuting the layers, shifting and rotating the gates, and giving a constant input to the value network) that destroy the layer by layer computational structure do not degrade test performance. These operations lead to combinatorially many models and in all of them the test performance remains the same. In \Cref{sec:exp2} we throw light on the open question in \citenum{randlabel} on why test performance degrades due to upstream training with random labels.
+In what follows, \Cref{sec:exp1} is themed around the key insight obtained from \Cref{th:main}, i.e., the correlation of the gates lies at the heart of `what is learnt in a DNN with ReLUs'. In particular, we show that operations (such as permuting the layers, shifting and rotating the gates, and giving a constant `all-ones' input to the value network) that destroy the layer by layer computational structure do not degrade test performance. These operations lead to combinatorially many models and in all of them the test performance remains the same. In \Cref{sec:exp2} we throw light on the open question in \citenum{randlabel} on why test performance degrades due to upstream training with random labels.
 % Prior vs now what is the difference : robustness + random label etc
 %Datasets are MNIST and CIFAR-10. For MNIST, we use the DGN in \Cref{fig:dgn-prior-new} (right) with fully connected layers instead of the convolutional layers.  All models are trained with `\emph{Adam}'  \cite{adam} (step-size $=3\cdot 10^{-4}$ , batch size $=32$). 
-\subsection{Experiment 1: Destroying layer-by-layer structure does not affect performance}\label{sec:exp1}
-The aim of the experiment is to investigate the information in the gates and to show that it is invariant even if we destroy the layer-by-layer structure. The gates themselves are basically of three kinds as described below.
-$1.$ Fixed Learnt: We \emph{pre-train} the feature network (which is a DNN with ReLUs), then \emph{freeze} the weights of the feature network, and then train the value network. This way we can measure information in the gates of a trained DNN.\\
-$2.$ Fixed Random: We initialise the feature network at random, and then \emph{freeze} its weights and then train the value network. This way we can measure information in the gates of a DNN at initialisation. Here, the feature and value network can be either initialised with the same weights (i.e., dependent initialisation) or statistically independent weights (i.e., independent initialisation).
-$3.$ Decoupled Learning: We initialise the weights of the value and feature network statistically independent and then train both of them. For the gradient to flow through the feature network we use \emph{soft-gating}, i.e., $G(q)=\frac{1}{1+\exp{-\beta\cdot q}}$, with $\beta=10$. 
+\subsection{Robustness of Gates: Destroying layer-by-layer structure does not affect performance}\label{sec:exp1}
+In this experiment we show that information in the gates is invariant even if we destroy the layer-by-layer structure. We consider the three kinds of gates described below.\\
+\indent \quad$1.$ \textbf{Fixed Learnt:} We \emph{pre-train} the feature network (which is a DNN with ReLUs), then \emph{freeze} the weights of the feature network, and then train the value network. This way we can measure information in the gates of a trained DNN.\\
+\indent \quad$2.$ \textbf{Fixed Random:} We initialise the feature network at random, and then \emph{freeze} its weights and then train the value network. This way we can measure information in the gates of a DNN at initialisation. Here, the feature and value network can be either initialised with the same weights i.e., dependent initialisation (DI) or statistically independent weights  i.e., independent initialisation (II).\\
+\indent \quad$3.$ \textbf{Decoupled Learning:} We initialise the weights of the value and feature network statistically independent and then train both of them. For the gradient to flow through the feature network we use \emph{soft-gating}, i.e., $G(q)=\frac{1}{1+\exp({-\beta\cdot q})}$, with $\beta=10$. 
 
-
-
-
-\textbf{Prior Work (4 Regimes, 1 Model Per Regime ).} 
-Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of identical architecture namely the feature network and the value network. Both the feature network and value network have $4$ convolutional layers $C1,\ldots,C4$ followed by a global average pooling (GAP) layer, a linear layer and a final `softmax' layer. $\hat{y}_{\text{DGN}}$ is the output of the DGN (performance is measured with respect to this output). $\hat{y}_{\text{f}}$ is used only when we want to \emph{pre-train} the feature network. The feature network has ReLUs, whereas the value network uses the gates from feature network as external masks. Here, $G_1,\ldots,G_4$ are the gates of layers $1,\ldots,4$ of feature network and in the prior setup these are used directly in the value network. The DGN has the following $\mathbf{4}$ {gating regimes} based on the initialisation and trainability of the feature network parameters. In all these regimes, the output of the DGN is $\hat{y}_{\text{DGN}}$. 
-
-\quad 1. \emph{Fixed Random-Dependent Initialisation} (\textbf{FR-DI}): Both value network and feature network are initialised at random and identically, i.e., $\Tf_0=\Tv_0$. Only the value network is trained and the feature network is fixed, i.e., $\Tf_t=\Tf_0,\forall t\geq 0$.
-
-\quad 2. \emph{Fixed Random-Independent Initialisation} (\textbf{FR-II}): Both value network and feature network are initialised at random and statistically independent of each other, i.e., $\Tf_0\perp \Tv_0$. Only the value network is trained and the feature network is fixed, i.e., $\Tf_t=\Tf_0,\forall t\geq 0$.
-
-\quad 3. \emph{Fixed Learnt} (\textbf{FL}): The feature network is \textbf{pre-trained} first using $\hat{y}_{\text{f}}$ as output. Then the value network is initialised at random, and only the value network is trained and the feature network is fixed.
-
-\quad 4. \emph{Decoupled learning} (\textbf{DL}): Both value and feature networks are initialised at random, and \textbf{both are trained}. In order to ensure that gradient flows through the feature network, we make use of \emph{soft-gating}, i.e., $G(q)=\frac{1}{1+\exp{-\beta\cdot q}}$, with $\beta=10$. 
-
+We make use of the deep gated network (DGN) setup shown in \Cref{fig:dgn-prior-new} (right) which is an improvisation of the DGN in prior work [\citenum{npk}] shown in \Cref{fig:dgn-prior-new} (left). In the current setup, {\bf{$G_{i_1},\ldots,G_{i_4}$ is a permutation of the $G_1,\ldots,G_4$}}, this gives $24$ models. Note that these \textbf{permutations destroy the layer by layer structure}. In the prior setup both value and feature networks have the same input $x\in\R^{\din}$. In the current setup, we have two separate inputs, $x^{\text{f}}\in\R^{\din}$ for the feature network and $x^{\text{v}}\in\R^{\din}$ for the value network. We set $x^{\text{f}}=x$ always, however, for $x^{\text{v}}$ there are \textbf{two modes} namely (i) \textbf{standard}: we set $x^{\text{v}}=x$ ,(ii) \textbf{`all-ones'}: we set $x^{\text{v}}=\mathbf{1}\in\R^{\din}$ (a tensor of all $1$'s). While the setup on the left is only one model, the setup on the right has $\mathbf{48=24\times 2}$ \textbf{different models}, where $24=\texttt{factorial}(4)$ is due to the gate permutations and $2$ is due the settings of $x^{\text{v}}$.
 \begin{figure}[h]
 \centering
-\begin{minipage}{0.49\columnwidth}
+\begin{minipage}{0.4\columnwidth}
 \centering
 \resizebox{\columnwidth}{!}{
 \includegraphics[scale=0.3]{figs/exp-prior.pdf}
 }
 \end{minipage}
-\begin{minipage}{0.49\columnwidth}
+\begin{minipage}{0.4\columnwidth}
 \centering
 \resizebox{\columnwidth}{!}{
 \includegraphics[scale=0.3]{figs/exp-new.pdf}
@@ -40,51 +27,43 @@ Recall from \Cref{sec:dgn}, that a DGN consists of two distinct networks of iden
 \label{fig:dgn-prior-new}
 \end{figure}
 
-\textbf{This Paper (4 Regimes, 48 Models Per Regime ).} The improvisations are marked in {\color{red}{red}}.  In the current setup, {\bf{$G_{i_1},\ldots,G_{i_4}$ is a permutation of the $G_1,\ldots,G_4$}}, this gives $24$ models. In the prior setup both value and feature networks have the same input $x\in\R^{\din}$. In the current setup, we have two separate inputs, $x^{\text{f}}\in\R^{\din}$ for the feature network and $x^{\text{v}}\in\R^{\din}$ for the value network. We set $x^{\text{f}}=x$ always, however, for $x^{\text{v}}$ there are \textbf{two modes} namely (i) \textbf{standard}: we set $x^{\text{v}}=x$ ,(ii) \textbf{constant}: we set $x^{\text{v}}=\mathbf{1}\in\R^{\din}$ (a tensor of all $1$'s). While the setup on the left is only one model, the setup on the right has $\mathbf{48=24\times 2}$ \textbf{different models}, where $24=\texttt{factorial}(4)$ is due to the gate permutations and $2$ is due to the two different ways of setting $x^{\text{v}}$.
+\begin{table}[h]
+\centering
+\begin{minipage}{0.8\columnwidth}
+\begin{tabularx}{\columnwidth}{c *{5}{Y}}
+\toprule
+ Dataset& \multicolumn{2}{c}{Fixed Random}   &  \multicolumn{1}{c}{Decoupled} & \multicolumn{1}{c}{ Fixed } & \multicolumn{1}{c}{ReLU \tiny{(Feature Network)}}\\
+& II & DI &Learning &Learnt &\\\hline\arrayrulecolor{white}\midrule
+MNIST& 94.1{\tiny{$\pm$0.3}}  &94.1\tiny{$\pm$0.3}  &98.1\tiny{$\pm$0.1} &98.6\tiny{$\pm$0.1} &98.5{\tiny{$\pm$0.1}}\\\hline\\\hline 
+CIFAR-10& 67.5\tiny{$\pm$0.7} &67.6\tiny{$\pm$0.7}   &77.6\tiny{$\pm$0.6} &79.4\tiny{$\pm$0.3} &80.4\tiny{$\pm$0.3}\\\hline
+\arrayrulecolor{black}\bottomrule
+\end{tabularx}
+\end{minipage}
+\caption{Shows the test accuracy of various gates. The main result here is that the numbers in columns $1$ to $4$ are averaged over $48$ models and performance is robust to layer permutations and $x^{\text{v}}=\mathbf{1}$ input. The performance of the ReLU is averaged over $5$ independent runs.}
+\label{tb:regimes}
+\end{table}
 
+\textbf{Note on prior results.} The following two observations were made in prior work [\citenum{npk}]: (i) by using the gates and training the NPV from scratch we can recover the performance (see ReLU vs Fixed Learnt in \Cref{tb:regimes}), and (ii) finite width network with random gates gives $67.5$ which is worser than $77.43$ of Convolutional NTK [\citenum{arora2019exact}], and finite width network with learnt gates give $79.4$ which is better than $77.43$ of Convolutional NTK, i.e., learning in the gates is the explain difference between finite width DNNs and infinite width NTK.
 
-
-
-
-
-\begin{tabular}{|p{1.75cm}|c|c|c|c|c|}\hline
-& FR-II &FR-DI & DL& FL& ReLU\\\hline
-\centering{FC (MNIST)} &$94.1\%$  &$94.1\%$  &$98.1\%$ &$98.6\%$ &$98.5\%$\\\hline
-\centering{CNN (CIFAR-10)}&$67.5\%$ &$67.6\%$   &$77.6\%$ &$79.4\%$ &$80.4\%$\\\hline
-\end{tabular}
-
-
-\textbf{Discussion.}
-
-\indent\quad $1.$ \textbf{Decoupling gates and weights does not hurt.} There is no performance difference between FR-II and FR-DI.  Further, decoupled learning of gates (DL) performs significantly better than fixed random gates (FR), and the gap between standard DNN with ReLU and DL is less than $3\%$. This marginal performance loss seems to be worthy trade off for fundamental insights of \Cref{th:main} under the decoupling assumption.
-
-\indent\quad $2.$ \textbf{Features are in the gates.} The fixed learnt regime (FL) shows that using the gates of a pre-trained ReLU network, performance can be recovered by training the NPV. Also, by interpreting the input dependent component of a model to be the features and the input independent component to be the weights, it makes sense to look at the gates/NPFs as the hidden features and NPV as the weights.% (which can be re-trained).
-
-\indent\quad $3.$ \textbf{Random gates perform well.} FR-II does perform well in all the experiments (note that for a $10$-class problem, a random classifier would achieve only $10\%$ test accuracy). Given the observation that the gates are the true features, and the fact that is there no learning in the gates in the fixed regime, and the performance of fixed random gates can be purely attributed to the in-built structure.
-
-\indent\quad $4.$ \textbf{Gate Learning explain finite vs infinite width.} We group the models into three sets where $S_1=\{$ ReLU, FL , DL$\}$, $S_2=\{$ FR$\}$ and $S_3=\{$ CNTK $\}$, and explain the difference in performance due to gate learning.
- $S_2$ and $S_3$ have no gate learning. However,  $S_3$ due to its infinite width has better averaging resulting in a well formed kernel and hence performs better than $S_2$ which is a finite width. Thus, the difference between $S_2$ and $S_3$ can be attributed to finite versus infinite width. Both $S_1$ and $S_2$ are finite width, and hence, conventional feature learning happens in both $S_1$ and $S_2$, but, $S_1$ with gate learning is better ($77.5\%$ or above in CIFAR-10) than $S_2$ ($67\%$ in CIFAR-10) with no gate learning. Thus neither finite width, nor the conventional feature learning explain the difference between $S_1$ and $S_2$. Thus, `gate learning' discriminates the regimes $S_1, S_2$ and $S_3$ better than the conventional feature learning view.
-
-\indent\quad $5.$ \textbf{Robustness to layer permutation:} The performance (in all the $4$ regimes) is also robust to permutation of layers. Recall that the NPK expression in \Cref{th:main} is dependent on gating information in the form of $\ip{G_l(x),G_l(x')}$. So robustness to layer permutations is because, even if we permute the layers in the value network, whether or not any given gate triggers for both inputs $x$ and $x'$ remains invariant to this permutation. 
-
-\indent\quad $6.$ \textbf{Robustness to constant input:} The performance (in all the $4$ regimes) is  robust to `all-ones' inputs. Note that in the `all-ones' case, the input information affects the models only via the gates. Here, all the entries of the input Gram matrix are identical, and the NPK depends only the correlation between the gates $\ip{G_l(x),G_l(x')}$.
-
-\indent\quad $7.$ \textbf{Are Features Learnt Hierarchically? Yes and No.}
+\textbf{Robustness of Gates.} Entries in columns $1$ to $4$ in \Cref{tb:regimes} are  averaged over $48$ different models which were obtained by permuting the layers and constant inputs. Our main result is that the information in the gates is robust to layer permutations and `all-ones' input -- these justify the insights from \Cref{th:main} that as long as correlation in the gates is not destroyed the performance does not degrade. We also went one step further with respect to destroying the structure by considering arbitrary rotations. Here, we first tile the gates of the various filters (as a tensor) in the reverse order starting from layer $4$ to layer $1$ and then rotate arbitrarily in each of the three dimension for five times as shown in left of \Cref{fig:visual-permute} (i.e, two image dimensions and one filter dimension). For each rotation in a filter dimension we choose a random integer belonging to  $[0,512)$ and for each of the rotations in the image dimensions we choose a uniform random integer belonging to $[0,32)$. We did $5$ independent runs of the fixed learnt gates and decoupled learning of gates and observed the test performance to be $--$ and $--$ respectively (which are similar to the numbers shown in \Cref{tb:regimes}).
 
 \input{visual}
 
+\textbf{Primal vs Dual View of features.} The standard primal view is to think that the input is processed layer-by-layer and the hidden features are in the outputs. The dual view is that the features are encoded in the gates (analytically speaking the NPF/NPK). While both are mathematically equivalent, we believe that the dual view paints more accurate picture. Our experiments challenge the primal view. Firstly, we do not provide the actual input to the value network but provide only $\mathbf{1}$ (`all-ones') input. Now, it could be argued that the value network gets the information about the via its gating masks, and the DNN is to somehow `magically' learns the features from gates. To counter this argument, we have destroyed the layer-by-layer structure of the gates before applying them as masks in the value network as well. As a result, there is a huge `visual' difference between the hidden layer outputs of the feature network and that of the value network (see right of \Cref{fig:visual-permute}).  One could still insist that DNNs are so powerful that they are recovering the features layer-by-layer. Or alternatively, one can appeal to the dual view to conclude that as neither `all-ones' input nor the arbitrary rotation of the gates affect the correlation of gates \Cref{th:main}. While the gates are generated layer-by-layer in the feature network, when applied as masks, the function of the gates is to learn and train the paths and sub-networks (viewpoint trivially following from \Cref{prop:npf-npv}) .
 
-\subsection{Experiment 2: Upstream training with random labels and downstream with true labels}
+\textbf{Gate learning need not be layer-by-layer.} Note that when in `decoupled learning' of gates (column $3$ \Cref{tb:regimes}), while the gates are generated layer-by-layer in the feature network, after permutations/arbitrary rotations they end in a completely different location in the value network during training. Thus even during training the gates can be arbitrarily placed, so to speak.
+
+\subsection{Upstream training with random labels and downstream with true labels affects the gates}\label{sec:exp2}
 
 
-\textbf{Q1 (open question).} {When trained with random labels upstream followed by true labels downstream, the test performance of DNNs with ReLUs degrades, Why?}
+\textbf{Q1 (open question [\citenum{randlabel}]).} {When trained with random labels upstream followed by true labels downstream, the test performance of DNNs with ReLUs degrades, Why?}
 
 \textbf{Setup to answer Q1.} We hypothesise that the answer to the above question lies in the gates. To test our hypothesis, we train in two phases (i) Phase I: upstream training with label noise levels $\gamma=0, 25\%, 50\%, 75\%$ and (ii) Phase II: downstream training with true labels. We then measure the information stored in the gates at the end of each of the two phases. To this end, we consider the DGN setup in \Cref{fig:dgn-prior-new} (left), and train the feature network (which is a DNN with ReLUs). In `Phase I: Upstream', we train the feature network for different values of label noise $\gamma=0, 25\%, 50\%, 75\%$, which gives us models $M1(\gamma)$ (see \Cref{fig:rand-label-setup}). In order to measure the information in the gates learnt at the end of `Phase I: Upstream', we keep these gates fixed and train the value network with true labels -- this gives us models $M2(\gamma)$ (see \Cref{fig:rand-label-setup}). Second is `Phase II: Downstream', wherein, we start with models $M1(\gamma)$, and perform downstream training with true labels to obtain models $M4(\gamma)$ ($\gamma=0$ is an exception; there is no downstream training because $M1(0)$ has been already trained with true labels in upstream).  In order to measure the information in the gates learnt at the end of `Phase II: Downstream', we keep these gates fixed and train the value network with true labels -- this gives us models $M5(\gamma)$ (see \Cref{fig:rand-label-setup}).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.3]{figs/rand-label-big.pdf}
-\caption{Shows various models trained in Experiment 2. Here, US and DS stand for upstream and down stream respectively. True for with true labels. Here models $M1$ and $M4$ are feature networks (DNNs with ReLUs), and $M2, M3$ and $M5$ are value networks which use the fixed gates from the feature networks. Models are parameterised by $(\gamma)$ which is the label noise level.}
+\caption{Shows various models trained in Experiment 2. Here, US and DS stand for upstream and down stream respectively. True for training with true labels. Here models $M1$ and $M4$ are feature networks (DNNs with ReLUs), and $M2, M3$ and $M5$ are value networks which use the fixed gates from the feature networks. Models are parameterised by $(\gamma)$ which is the label noise level.}
 \label{fig:rand-label-setup}
 \end{figure}
 
@@ -102,7 +81,6 @@ We now discuss the results of the experiments with random labels shown in \Cref{
 \begin{table}[h]
 \begin{tabularx}{\columnwidth}{c *{6}{Y}}
 \toprule
-
  & \multicolumn{4}{c}{Phase I: Upstream}  
  & \multicolumn{2}{c}{Phase II: Downstream}\\
 \cmidrule(lr){2-5} \cmidrule(l){6-7}
