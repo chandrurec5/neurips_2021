@@ -30,6 +30,6 @@
 }
 
 \end{minipage}
-\caption{Top (Standard CNN): First image on the left is the input image and the next $8$ images are outputs of $2$ filters in each of the $4$ layers. Bottom (DGN with gates of the top model applied in reverse order): First image on the left is the input to the value network and the next $8$ images are outputs of $2$ filters in each of the $4$ layers. Both models achieve a test accuracy of about $80\%$.}
+\caption{On the left is the setup for arbitrary rotation of gates. On the right, we have the images related to feature and value networks on top and bottom rows respectively. Each row has the input image followed by the output of first $2$ filters in each of the $4$ layers.  In the bottom row, first column is blank due to the fact that we provide $\mathbf{1}$ as input to the value network.  Both the feature network and the value network achieve a test accuracy of about $80\%$ in CIFAR-10.}
 \label{fig:visual-permute}
 \end{figure}
