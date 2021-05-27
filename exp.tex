@@ -39,13 +39,13 @@ CIFAR-10& 67.5\tiny{$\pm$0.7} &67.6\tiny{$\pm$0.7}   &77.6\tiny{$\pm$0.6} &79.4\
 \arrayrulecolor{black}\bottomrule
 \end{tabularx}
 \end{minipage}
-\caption{Shows the $\%$ test accuracy of various gates. The main result here is that the numbers in columns $1$ to $4$ are averaged over $48$ models and performance is robust to layer permutations and $x^{\text{v}}=\mathbf{1}$ input. The performance of the ReLU is averaged over $5$ independent runs.}
+\caption{\small Shows the $\%$ test accuracy of various gates. The main result here is that the numbers in columns $1$ to $4$ are averaged over $48$ models (1 run per model, best performance in each run) and performance is robust to layer permutations and $x^{\text{v}}=\mathbf{1}$ input. For ReLU the average is over $5$ independent runs. Optimiser: Adam (3e-4).}
 \label{tb:regimes}
 \end{table}
 
 \textbf{Note on prior results.} The following two observations were made in prior work [\citenum{npk}]: (i) by using the gates and training the NPV from scratch we can recover the performance (see ReLU vs Fixed Learnt in \Cref{tb:regimes}), and (ii) the performance of  Convolutional NTK ($77.43\%$)[\citenum{arora2019exact}] is between that of finite width network with random gates  ($67.5\%$) and learnt gates give ($79.4\%$), i.e., learning in the gates explains the difference between finite width DNNs and infinite width NTK.
 
-\textbf{Robustness of Gates.} Entries in columns $1$ to $4$ in \Cref{tb:regimes} are  averaged over $48$ different models which included  permuting the layers and providing $\mathbf{1}$ as input. Our main result is that the information in the gates is robust over these $48$ models -- these justify the insights from \Cref{th:main} that as long as correlation in the gates is not destroyed the performance does not degrade. We also went one step further with respect to destroying the structure by considering arbitrary rotations. Here, we first tile the gates of the various filters (as a tensor) in the reverse order starting from layer $4$ to layer $1$ and then rotate arbitrarily in each of the three dimension for five times as shown in left of \Cref{fig:visual-permute} (i.e, two image dimensions and one filter dimension). For each rotation in the filter dimension we choose a random integer belonging to  $[0,512)$ and for each of the rotation in the image dimensions we choose a uniform random integer belonging to $[0,32)$. We did $5$ independent runs of the fixed learnt gates and decoupled learning of gates and observed the test performance to be $--$ and $--$ respectively (which are similar to the numbers shown in \Cref{tb:regimes}).
+\textbf{Robustness of Gates.} Entries in columns $1$ to $4$ in \Cref{tb:regimes} are  averaged over $48$ different models which included  permuting the layers and providing $\mathbf{1}$ as input. Our main result is that the information in the gates is robust over these $48$ models -- these justify the insights from \Cref{th:main} that as long as correlation in the gates is not destroyed the performance does not degrade. We also went one step further with respect to destroying the structure by considering arbitrary rotations. Here, we first tile the gates of the various filters (as a tensor) in the reverse order starting from layer $4$ to layer $1$ and then rotate arbitrarily in each of the three dimension for five times as shown in left of \Cref{fig:visual-permute} (i.e, two image dimensions and one filter dimension). For each rotation in the filter dimension we choose a random integer belonging to  $[0,512)$ and for each of the rotation in the image dimensions we choose a uniform random integer belonging to $[0,32)$. We did $10$ independent runs of the fixed learnt gates and decoupled learning of gates and observed the test performance to be $79.4${\tiny$\pm$0.2} and $79.0${\tiny$\pm$0.5} respectively (which are similar to the numbers shown in \Cref{tb:regimes}).
 
 \input{visual}
 \textbf{Primal vs Dual View of features.} The standard (primal) view is that the input is processed layer-by-layer and the hidden features are in the layer outputs. 
@@ -103,14 +103,14 @@ $\gamma$& Best & End & True& US/DS & True & True\\\hline\arrayrulecolor{white}\m
 \arrayrulecolor{black}\bottomrule
 Models & \multicolumn{2}{c}{M1($\gamma$)} & M2($\gamma$) & M3($\gamma$)& M4($\gamma$) & M5($\gamma$)\\\bottomrule
 \end{tabularx}
-\caption{Shows the performance of the various models in Experiment 2.}
+\caption{\small Shows the test accuracy on CIFAR-10 of the various models in Experiment 2. The numbers are averaged over $3$ runs (best accuracy is taken in each run except for column `End'). Optimiser: Adam(3e-4).}
 \label{tb:rand-label}
 \end{table}
 
 
 \textbf{Answer to Q1.} \emph{When training with random labels upstream, the test performance degrades because the gates get degraded.} This follows from the fact that the performance of the DNN with ReLUs at the end of Phase II, i.e., $M4$ and that of the value network with the fixed gates at end of Phase II, i.e., $M5$ are approximately equal (within $0.5\%$). 
 
-\textbf{Gates are fairly robust to random labels.} Note that while training with random labels upstream, the test performance initially improves, reaches a peak and then degrades (see columns `Best' and `End' in \Cref{tb:rand-label}). The performance of the DNN with ReLUs at the end of `Phase I' is shown in the second column of \Cref{tb:rand-label}. However, the performance of the fixed gates at the end of `Phase I' shown in third column of \Cref{tb:rand-label} is much better and is more closer to the performance of the downstream model $M4$. This means, during upstream training with random labels, the performance degradation post the peak value mostly affects only the weights and not the gates.
+\textbf{Gates are fairly robust to random labels.} Note that while training with random labels upstream, the test performance initially improves, reaches a peak and then degrades (see columns `Best' and `End' in \Cref{tb:rand-label}). The performance of the DNN with ReLUs at the end of `Phase I' is shown in the column `End' of \Cref{tb:rand-label}. However, the performance of the fixed gates at the end of `Phase I' shown in third column of \Cref{tb:rand-label} is much better and is more closer to the performance of the downstream model $M4$. This means, during upstream training with random labels, the performance degradation post the peak value mostly affects only the weights and not the gates.
 
 \begin{comment}
 \begin{figure}[h]
