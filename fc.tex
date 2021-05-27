@@ -38,8 +38,8 @@ We point out that this statistical decoupling of weights and gates in \Cref{assm
 \textbf{Remark.} $\sum_{r=0}^{\din-1} \ip{x,rot(x',r)}_{\Lambda(\cdot, x,rot(x',r))}=\sum_{r=0}^{\din-1} \left(\sum_{i=1}^{\din} x(i) rot(x',r)(i)\Lambda(i,x,x')\right)$, where the inner `$\Sigma$' is the inner product between $x$ and $rot(x',r)$ weighted by $\Lambda$ and the outer `$\Sigma$' covers all possible rotations, which results in the rotational invariance property.
 
 \textbf{Residual Networks with Skip connections.} We consider a ResNet with `$(b+2)$' blocks and `$b$' skip connections between the blocks (left of \Cref{fig:resnet}). Each block is a fully connected (FC) DNN of depth `$\dblock$' and width `$w$'. There are combinatorially many sub-FC-DNNs within this ResNet (see \Cref{def:subfcdnn} and right of \Cref{fig:resnet}).
-\FloatBarrier
-\begin{figure}[h]
+%\FloatBarrier
+\begin{figure}[t]
 \begin{minipage}{0.5\columnwidth}
 \resizebox{\columnwidth}{!}{
 \includegraphics[scale=0.5]{figs/resnet.pdf}

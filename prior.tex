@@ -1,5 +1,7 @@
-\section{Prior Work on Duality: Neural Path Framework}\label{sec:dual}
+\section{Preliminaries on the Dual View for DNN with ReLUs}\label{sec:dual}
 In this section, we will present a brief overview of the dual view for a fully connected (FC) DNN with ReLUs as presented in [\citenum{npk}]. The main points are: (i) the neural path feature (encoding the gates and the input) and the neural path value (encoding the weights) in \Cref{def:npf-npv} and the expression \eqref{eq:inner} in \Cref{prop:npf-npv}, where the output of the DNN is equal to the summation of individual path contributions (illustrated in \Cref{fig:paths}), (ii) the correlation matrix of active sub-network overlaps in \Cref{def:overlap} and its relation to the \emph{neural path kernel} (this is the Gram matrix of the neural path features) in \Cref{lm:npk} and (iii) the deep gated network which decouples the gates and the weights.
+
+\textbf{Notation.} In what follows, $[n]$ denotes the set $\{1,\ldots,n\}$.
 \begin{comment}
 \subsection{Input Output Relationship in Fully Connected DNN: Primal View }
 We consider fully-connected DNNs with `$w$' hidden units per layer and `$d-1$' hidden layers. $\Theta\in\R^{\dnet}$ are the network weights, where $\dnet=\din w+(d-2)w^2+w$. The information flow is shown in \Cref{tb:basic}, where
@@ -19,7 +21,7 @@ Final Output&: & $\hat{y}_{\Theta}(x)$ & $=$ & $\sum_{j\in[w]} \Theta(1,j,d-1)\c
 \end{comment}
 
 \subsection{Gates, Weights and Sub-Networks: Neural Path -- Features, Value and Kernel}
-We consider a FC-DNN with `$d$' layers and  $w$  hidden units in each layer. 
+We consider a FC-DNN with `$d$' layers and  $w$  hidden units in each layer. %let $[n]$ denote the set $\{1,\ldots,n\}$.
 \begin{definition}\label{def:npf-npv}
 A path starts from an input node, passes through a weight and a hidden unit in each layer and ends at the output node. We define the following quantities for a path $p$:
 \emph{
@@ -37,7 +39,7 @@ There are $\Pfc=\din w^{(d-1)}$ paths and a path is active only if all the gates
 \hat{y}_{\Theta}(x)=\ip{\phi_{x,\Theta},v_{\Theta}}=\sum_{p\in[P]}  \phi_{x,\Theta}(p) v_{\Theta}(p)
 \end{align}
 \end{proposition}
-\begin{figure}[h]
+\begin{figure}[t]
 \centering
 \resizebox{0.9\columnwidth}{!}{
 \includegraphics[scale=0.5]{figs/paths.pdf}

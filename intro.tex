@@ -36,22 +36,26 @@ The gates are treated as masks and are decoupled from the weights by storing the
 
 
 \subsection{Our Contribution}
-In this paper, we present four results that strengthen the dual view and the importance of gates.  The first result is theoretical and is justified by the second result which is experimental. The third result settles an important open problem using the dual view showcasing its usefulness. The final result is empirical and builds on the insights obtained from the first three results. The results are listed below.
+In this paper, we present six results (first three are theoretical, followed by experimental) that strengthen the dual view and the importance of gates. The first experimental result verifies the theoretical insights. The second experimental result settles an open problem using the dual view showcasing its usefulness. The final result builds on the insights obtained from the first five results. 
+%In this paper, we present six results that strengthen the dual view and the importance of gates.  The first result is theoretical and is justified by the second result which is experimental.  The final result is empirical and builds on the insights obtained from the first three results. 
 
 \indent\quad$1.$ \textbf{Product Kernel:} Expression in \eqref{eq:ntk-npk-relation} is in terms of the active sub-network overlap. We further simplify this down to the gates to show that the NPK has the following product structure:
 \centerline{$\text{NTK}(x,x') \propto \langle x,x'\rangle\cdot \Pi_{l=1}^{d-1} \frac{\ip{G_l(x),G_l(x')}}w,$}
 
 where $G_l(x)\in\{0,1\}^w$ is the binary feature encoding the gates of layer $l$. The main message is that the \emph{base kernels} $\frac{\ip{G_l(x),G_l(x')}}w$ measuring the \textbf{\emph{correlation of gates} } captures the role of gates.
 
-\indent\quad$2.$ \textbf{Robustness of Gates:} We show that operations such as permutation of layers, arbitrary tiling cum rotation of the gates and providing a constant $\mathbf{1}$ input, that destroy the \emph{layer-by-layer} structure do not degrade performance because the `correlation of gates' is not lost in these operations.
+\indent\quad$2.$ \textbf{Convolutional layers with pooling} makes the NPK \emph{rotationally invariant} .
 
-\indent\quad$3.$\textbf{Gates and Random Labels:} Upstream training with random labels followed by downstream training with true labels degrades test performance [\citenum{randlabel}]. We show that this degradation is due to the fact that random labels affect the gates, and gates do resist such degradation to a large extent. Also, if the gates are fixed, upstream training by random labels does not degrade test performance.
+\indent\quad$3.$ \textbf{Skip connections} endow a \emph{sum of product of base kernels} structure to the NPK.
 
-\indent\quad$4.$ \textbf{No Hidden Features:} We modify standard architectures (VGG19 and a ResNet) to yield two deep gated networks in which feature extractor is free of activations and is separate from the gates and the weights -- these achieve greater than $90\%$ test accuracy on CIFAR-10. Since the feature extractor uses only standard `image processing' operations, the features are interpretable and no longer hidden.
+\indent\quad$4.$ \textbf{Robustness of Gates:} Operations such as permutation of layers, arbitrary tiling cum rotation of the gates and providing a constant $\mathbf{1}$ input, which we design to destroy the traditional layer-by-layer flow, do not degrade performance since the `correlation of gates' is not lost in these operations.
+
+\indent\quad$5.$\textbf{Gates and Random Labels:} Upstream training with random labels followed by downstream training with true labels degrades test performance [\citenum{randlabel}]. We show that this degradation is due to the fact that random labels affect the gates, and gates do resist such degradation to a large extent. Also, if the gates are fixed, upstream training by random labels does not degrade test performance.
+
+\indent\quad$6.$ \textbf{No Hidden Features:} We modify standard architectures (VGG19 and a ResNet) to yield two deep gated networks in which feature extractor is free of activations and is separate from the gates and the weights -- these achieve greater than $90\%$ test accuracy on CIFAR-10. Since the feature extractor uses only standard `image processing' operations, the features are interpretable and no longer hidden.
 
 %\item Adversarial examples can attack the model solely via the linear component.
 
-\textbf{Technical Extension.} We also extend the dual view to cover the cases of convolutions with pooling and skip connections. We show that convolutional layers with pooling makes the NPK \emph{rotationally invariant} and skip connections endow a \emph{sum of product of base kernels} structure to the NPK.
 
-\textbf{Notation.} In what follows, $[n]$ denotes the set $\{1,\ldots,n\}$.
+%\textbf{Notation.} In what follows, $[n]$ denotes the set $\{1,\ldots,n\}$.
 % (this property has already been noted to hold for the NTK). We also consider a residual network (ResNet) architecture with $(b+2)$ blocks of fully connected networks with `$b$' skip connections between them. Within this ResNet there are $i=1,\ldots,2^b$ possible fully connect networks, and then $\text{NPK}^{\text{residual}}=\sum_{i=1}^{2^b} C_i \text{NPK}^{\text{dense}}_i$, where $C_i>0$ are positive constants.
