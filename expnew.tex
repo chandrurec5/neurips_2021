@@ -31,7 +31,7 @@ We make use of the deep gated network (DGN) setup shown in \Cref{fig:dgn-prior-n
 \toprule
  Dataset& \multicolumn{2}{c}{Fixed Random}   &  \multicolumn{1}{c}{Decoupled} & \multicolumn{1}{c}{ Fixed } & \multicolumn{1}{c}{ReLU \tiny{(Feature Network)}}\\
 & II & DI &Learning &Learnt &\\\hline\arrayrulecolor{white}\midrule
-MNIST[\citenum{mnist}]& 94.1{\tiny{$\pm$0.3}}  &94.1\tiny{$\pm$0.3}  &98.1\tiny{$\pm$0.1} &98.6\tiny{$\pm$0.1} &98.5{\tiny{$\pm$0.1}}\\\hline\\\hline 
+MNIST[\citenum{mnist}]& 94.1{\tiny{$\pm$0.3}}  &94.1\tiny{$\pm$0.3}  &98.1\tiny{$\pm$0.1} &98.6\tiny{$\pm$0.1} &98.5{\tiny{$\pm$0.1}}\\\hline
 CIFAR-10[\citenum{cifar}]& 67.5\tiny{$\pm$0.7} &67.6\tiny{$\pm$0.7}   &77.6\tiny{$\pm$0.6} &79.4\tiny{$\pm$0.3} &80.4\tiny{$\pm$0.3}\\\hline
 \arrayrulecolor{black}\bottomrule
 \end{tabularx}
@@ -79,9 +79,9 @@ The results of the experiments with random labels shown in \Cref{tb:rand-label} 
 
 \textbf{Answer to Q2.} \emph{When the gates are fixed test performance is robust to upstream training with random labels.} In  \Cref{tb:rand-label}, look at the performance of $M3(\gamma=0)$ and compare it with performance of  $M4(\gamma), \gamma=25,50,75$. When the gates are fixed, i.e., in $M3(0)$ (note: this is a value network), the upstream training with even $100\%$ label noise does not hurt the test performance so much ($81.2-79.3 <2\%$) in comparison to the cases when the gates are allowed to change, i.e., $M4(\gamma)$ (note: these are feature networks), the test performance degrades (from $81.2$) to $76.9$ ( $ 4.3\%$ for $\gamma=25$), $73.6$ ( $7.6\%$ for $\gamma=50$) and  $68.1$ ($13.1\%$ for $\gamma=75$) for even less than $100\%$ label noise.
 %\begin{comment}
-\begin{table}[b]
+\begin{table}[t]
 \centering
-\resizebox{0.9\columnwidth}{!}{
+\resizebox{0.8\columnwidth}{!}{
 \begin{tabularx}{\columnwidth}{c *{6}{Y}}
 \toprule
  & \multicolumn{4}{c}{Phase I: Upstream}  
@@ -90,9 +90,9 @@ The results of the experiments with random labels shown in \Cref{tb:rand-label} 
 &  \multicolumn{2}{c}{ReLU}  &\multicolumn{2}{c}{Fixed Gates} & ReLU & {Fixed Gates}\\
 \cmidrule(lr){2-3} \cmidrule(lr){4-5}\cmidrule(lr){6-7}
 $\gamma$& Best & End & True& US\&DS & True & True\\\hline\arrayrulecolor{white}\midrule
-0 &{\bf{81.2}}{\tiny $\pm$ 0.3} & 80.0{\tiny $\pm$ 0.4} &{\bf{80.3}}{\tiny $\pm$ 0.2} & {\bf{79.3}}{\tiny $\pm$ 0.4} &-&- \\\hline\hline
-{25}&76.1{\tiny $\pm$ 0.6} & 63.1{\tiny $\pm$ 0.7}& 74.7{\tiny $\pm$ 0.5}& 72.3{\tiny $\pm$ 0.2}&76.9{\tiny $\pm$ 0.1}&76.9{\tiny $\pm$ 0.4}\\\hline\hline
-{50}&70.9{\tiny $\pm$ 0.8} & 41.5{\tiny $\pm$ 1.1}& 69.9{\tiny $\pm$ 0.3} & 66.8{\tiny $\pm$ 0.1}&73.4{\tiny $\pm$ 0.3}&73.6{\tiny $\pm$ 0.4}\\\hline\hline
+0 &{\bf{81.2}}{\tiny $\pm$ 0.3} & 80.0{\tiny $\pm$ 0.4} &{\bf{80.3}}{\tiny $\pm$ 0.2} & {\bf{79.3}}{\tiny $\pm$ 0.4} &-&- \\\hline
+{25}&76.1{\tiny $\pm$ 0.6} & 63.1{\tiny $\pm$ 0.7}& 74.7{\tiny $\pm$ 0.5}& 72.3{\tiny $\pm$ 0.2}&76.9{\tiny $\pm$ 0.1}&76.9{\tiny $\pm$ 0.4}\\\hline
+{50}&70.9{\tiny $\pm$ 0.8} & 41.5{\tiny $\pm$ 1.1}& 69.9{\tiny $\pm$ 0.3} & 66.8{\tiny $\pm$ 0.1}&73.4{\tiny $\pm$ 0.3}&73.6{\tiny $\pm$ 0.4}\\\hline
 {75}&56.9{\tiny $\pm$ 0.4} & 23.4{\tiny $\pm$ 0.4}& 63.9{\tiny $\pm$ 0.4} &60.0{\tiny $\pm$ 0.3}&68.1{\tiny $\pm$ 0.4}&67.7{\tiny $\pm$ 0.6}\\\hline
 \arrayrulecolor{black}\bottomrule
 Models & \multicolumn{2}{c}{M1($\gamma$)} & M2($\gamma$) & M3($\gamma$)& M4($\gamma$) & M5($\gamma$)\\\bottomrule
@@ -123,9 +123,7 @@ Models & \multicolumn{2}{c}{$M1(\gamma)$} & $M2(\gamma)$ & $M3(\gamma)$& $M4(\ga
 \end{table}
 \end{comment}
 
-\textbf{Answer to Q1.} \emph{The test performance degrades because the gates get degraded.} This follows from the fact that the performance of the DNN with ReLUs after training with true labels in Phase II, i.e., $M4$ and that of the value network with the fixed gates at end of Phase II, i.e., $M5$ are approximately equal (within $0.5\%$). In short, $M5$ gates come from $M4$.
-
-\textbf{Gates are fairly robust to random labels.} Note that while training with random labels upstream, the test performance initially improves, reaches a peak and then degrades (see columns `Best' and `End' in \Cref{tb:rand-label}). The performance of the DNN with ReLUs at the end of `Phase I' is shown in the column `End' of \Cref{tb:rand-label}. However, the performance of the fixed gates at the end of `Phase I' shown in fourth column of \Cref{tb:rand-label} i.e., $M2(\gamma)$, is much better and is more closer to the performance of the downstream models $M4(\gamma)$. This means, during upstream training with random labels, the performance degradation post the `Best' value mostly affects only the weights and not the gates.
+\textbf{Answer to Q1.} Recall from \Cref{prop:npf-npv} that in a DNN with ReLUs (which is the feature network), $\hat{y}_{\Tf}(x)=\ip{\phi_{x,\Tf},v_{\Tf}}$, and when training, both $\phi_{x,\Tf}$ and $v_{\Tf}$ are learnt. We now examine how random labels affect $\phi_{x,\Tf}$ and $v_{\Tf}$. During upstream training, the test performance initially improves, reaches a `Best' and then degrades (see `Best' and `End' in \Cref{tb:rand-label}). Now, if we use the NPFs $\phi_{x,\Tf}$ (i.e., gates) at the end of Phase I and train the NPV ($v_{\Tv}$) separately in the value network to obtain $M2(\gamma)$ we see that $M2(\gamma)$ is better than the `Best' of $M1(\gamma)$. This implies degradation post the `Best' value mostly affects only the NPV ($v_{\Tf}$) and not the NPFs. Yet, the NPFs $\phi_{x,\Tf}$ at end of Phase I, i.e., $M2(\gamma), \gamma=25,50,75$ are worser than $M2(0)$. Now, even when we perform downstream training with true labels in Phase II, the recovery is not full (i.e., $M4(\gamma)$ are not close to $M1(0)=81.2$). After both Phases I and II, both $\phi_{x,\Tf}$ and $v_{\Tf}$ have gone through upstream as well as downstream training, and the lack of recovery could be due to either $\phi_{x,\Tf}$  or $v_{\Tf}$. In order to separate this we take only the NPFs $\phi_{x,\Tf}$ (i.e., gates at end of Phase II) and retrain the NPV ($v_{\Tv }$) afresh with true labels in the value network to obtain $M5(\gamma)$. Now from the fact that $M5(\gamma) \approx M4(\gamma)$, we know that the NPFs $\phi_{x,\Tf}$ (i.e., the gates) are the real reason for the degradation. We can conclude that (i) \emph{the degradation in test performance is due to the gates (i.e., NPFs), and (ii) gates (i.e., NPFs) do resist such degradation (i.e., after the `Best' the NPFs do not degrade)}.
 
 \begin{comment}
 \begin{figure}[h]
